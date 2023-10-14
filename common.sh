@@ -611,14 +611,14 @@ function modify_config() {
 		
 		# 非强制使用openssl，由.config决定，只解决冲突
 		if [[ `grep -c "CONFIG_PACKAGE_libustream-openssl=y" ${HOME_PATH}/.config` -ge '1' ]]; then
-			if [[ `grep -c "CONFIG_PACKAGE_libustream-mbedtls" ${HOME_PATH}/.config` -ge '1' ]]; then
+			if [[ `grep -c "CONFIG_PACKAGE_libustream-mbedtls=y" ${HOME_PATH}/.config` -ge '1' ]]; then
 				sed -i '/CONFIG_PACKAGE_libustream-mbedtls/d' ${HOME_PATH}/.config
 				sed -i '$a # CONFIG_PACKAGE_libustream-mbedtls is not set' ${HOME_PATH}/.config
 				echo "__error_msg \"您同时选择libustream-mbedtls和libustream-openssl，库有冲突，只能二选一，已删除libustream-mbedtls库\"" >> ${CONFFLICTIONS}
 				echo "" >> ${CONFFLICTIONS}
 			fi
 			# libustream-wolfssl可能处于=y或=m状态
-			if [[ `grep -c "CONFIG_PACKAGE_libustream-wolfssl" ${HOME_PATH}/.config` -ge '1' ]]; then
+			if [[ `grep -c "CONFIG_PACKAGE_libustream-wolfssl=y" ${HOME_PATH}/.config` -ge '1' ]] || [[ `grep -c "CONFIG_PACKAGE_libustream-wolfssl=m" ${HOME_PATH}/.config` -ge '1' ]]; then
 				sed -i '/CONFIG_PACKAGE_libustream-wolfssl/d' ${HOME_PATH}/.config
 				sed -i '$a # CONFIG_PACKAGE_libustream-wolfssl is not set' ${HOME_PATH}/.config
 				echo "__error_msg \"您同时选择libustream-wolfssl和libustream-openssl，库有冲突，只能二选一，已删除libustream-wolfssl库\"" >> ${CONFFLICTIONS}
