@@ -13,7 +13,7 @@ if [[ -f "/usr/lib/lua/luci/controller/ttyd.lua" ]]; then
 	sed -i 's?services?system?g' "/usr/lib/lua/luci/controller/ttyd.lua"
 fi
 
-fi
+# chmod 0777 /etc/opkg/distfeeds.conf
 if [[ `grep -c "pkgroacn" /etc/opkg/distfeeds.conf` -ge '1' ]]; then
 	sed -i '/pkgroacn/d' /etc/opkg/distfeeds.conf
 fi
