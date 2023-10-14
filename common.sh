@@ -1166,8 +1166,7 @@ function compile_info() {
 		fi
 		__blue_color "固件版本: ${FIRMWARE_NAME}"
 		__blue_color "云端路径: ${GITHUB_RELEASE_URL}"
-		__white_color "编译成功后，会自动把固件发布到指定地址，生成云端路径"
-		__white_color "修改IP、DNS、网关或者在线更新，请输入命令：openwrt"
+		__white_color "在线更新，请输入命令：autoupdate，详见命令行说明"
 	fi
 	
 	echo
