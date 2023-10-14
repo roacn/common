@@ -14,8 +14,8 @@ if [[ -f "/usr/lib/lua/luci/controller/ttyd.lua" ]]; then
 fi
 
 # chmod 0777 /etc/opkg/distfeeds.conf
-if [[ `grep -c "pkgroacn" /etc/opkg/distfeeds.conf` -ge '1' ]]; then
-	sed -i '/pkgroacn/d' /etc/opkg/distfeeds.conf
+if [[ `grep -c "openwrt_pkg" /etc/opkg/distfeeds.conf` -ge '1' ]]; then
+	sed -i '/openwrt_pkg/d' /etc/opkg/distfeeds.conf
 fi
 if [[ `grep -c "helloworld" /etc/opkg/distfeeds.conf` -ge '1' ]]; then
 	sed -i '/helloworld/d' /etc/opkg/distfeeds.conf
