@@ -1146,8 +1146,7 @@ function compile_info() {
 		echo
 		__red_color "LXC固件自动更新"
 		__white_color "1、PVE运行："
-		__green_color "pct pull xxx /bin/openwrt.lxc /bin/openwrt && chmod -f +x /bin/openwrt"
-		__white_color "注意：将xxx改为个人OpenWrt容器的ID，如100"
+		__green_color "wget https://ghproxy.com/https://raw.githubusercontent.com/roacn/pve/main/openwrt.lxc.sh -O /usr/bin/openwrt && chmod +x /usr/bin/openwrt"
 		__white_color "2、PVE运行："
 		__green_color "openwrt"
 		echo
