@@ -233,7 +233,7 @@ function update_packages() {
 	gitdate=$(curl -H "Authorization: token ${REPO_TOKEN}" -s "https://api.github.com/repos/${PACKAGES_ADDR}/actions/runs" | jq -r '.workflow_runs[0].created_at')
 	gitdate=$(date -d "$gitdate" +%s)
 	now=$(date -d "$(date '+%Y-%m-%d %H:%M:%S')" +%s)
-	if [[ $(expr $gitdate + 60) < $now ]]; then
+	if [[ $(($gitdate+1800)) < $now ]]; then
 	curl -X POST https://api.github.com/repos/${PACKAGES_ADDR}/dispatches \
 	-H "Accept: application/vnd.github.everest-preview+json" \
 	-H "Authorization: token ${REPO_TOKEN}" \
