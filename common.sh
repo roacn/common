@@ -232,14 +232,12 @@ function git_clone_source() {
 function update_packages() {
 	gitdate=$(curl -H "Authorization: token ${REPO_TOKEN}" -s "https://api.github.com/repos/${PACKAGES_ADDR}/actions/runs" | jq -r '.workflow_runs[0].created_at')
 	gitdate=$(date -d "$gitdate" +%s)
-	__info_msg "gitdate=${gitdate}"
 	now=$(date -d "$(date '+%Y-%m-%d %H:%M:%S')" +%s)
-	__info_msg "now=${now}"
 	if [[ $(expr $gitdate + 60) < $now ]]; then
 	curl -X POST https://api.github.com/repos/${PACKAGES_ADDR}/dispatches \
 	-H "Accept: application/vnd.github.everest-preview+json" \
 	-H "Authorization: token ${REPO_TOKEN}" \
-	--data '{"event_type": "updated by ${REPOSITORY}"}'
+	--data "{\"event_type\": \"updated by ${REPOSITORY}\"}"
 	fi
 	__info_msg "packages url: https://github.com/${PACKAGES_ADDR}"
 }
