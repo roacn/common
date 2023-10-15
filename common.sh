@@ -74,7 +74,7 @@ function parse_settings() {
 		NOTICE_TYPE="false"
 	fi
 
-	if [[ ${PACKAGES_ADDR} == "default" ]]; then
+	if [[ ${PACKAGES_ADDR} =~ (default|DEFAULT|Default) ]]; then
 		PACKAGES_ADDR="roacn/openwrt-packages"
 	fi
 	if [[ ${ENABLE_PACKAGES_UPDATE} == "true" ]]; then
