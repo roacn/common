@@ -230,12 +230,13 @@ function git_clone_source() {
 # 插件源仓库更新
 ################################################################################################################
 function update_packages() {
-	gitdate=$(curl -H "Authorization: token ${REPO_TOKEN}" -s "https://api.github.com/repos/${PACKAGES_ADDR}/actions/runs" | jq -r '.workflow_runs[0].created_at')
-	gitdate=$(date -d "$gitdate" +%s)
-	echo "git latest merge upstream timestamp: ${gitdate}"
-	now=$(date -d "$(date '+%Y-%m-%d %H:%M:%S')" +%s)
-	echo "time now timestamp: ${now}"
-	if [[ $(($gitdate+1800)) < $now ]]; then
+	local gitdate_hms=$(curl -H "Authorization: token ${REPO_TOKEN}" -s "https://api.github.com/repos/${PACKAGES_ADDR}/actions/runs" | jq -r '.workflow_runs[0].created_at')
+	local gitdate_timestamp=$(date -d "$gitdate_hms" +%s)
+	echo "github latest merge upstream timestamp: ${gitdate_timestamp}, time: ${gitdate_hms}"
+	local now_hms="$(date '+%Y-%m-%d %H:%M:%S')"
+	local now_timestamp=$(date -d "$now_hms" +%s)
+	echo "time now timestamp: ${now_hms}, time: ${now_hms}"
+	if [[ $(($gitdate_timestamp+1800)) < $now_timestamp ]]; then
 	curl -X POST https://api.github.com/repos/${PACKAGES_ADDR}/dispatches \
 	-H "Accept: application/vnd.github.everest-preview+json" \
 	-H "Authorization: token ${REPO_TOKEN}" \
