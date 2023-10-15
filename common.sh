@@ -173,9 +173,9 @@ function parse_settings() {
 ################################################################################################################
 function notice_begin() {
 	if [[ "${NOTICE_TYPE}" == "TG" ]]; then
-		curl -k --data chat_id="${TELEGRAM_CHAT_ID}" --data "text=🎉 主人：您正在使用【${REPOSITORY}】仓库【${MATRIX_TARGET}】文件夹编译【${LUCI_EDITION}-${SOURCE}】固件,请耐心等待...... 😋" "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage"
+		curl -k --data chat_id="${TELEGRAM_CHAT_ID}" --data "text=🎉 主人：您正在使用【${REPOSITORY}】仓库【${MATRIX_TARGET}】文件夹编译【${SOURCE}-${LUCI_EDITION}】固件,请耐心等待...... 😋" "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage"
 	elif [[ "${NOTICE_TYPE}" == "PUSH" ]]; then
-		curl -k --data token="${PUSH_PLUS_TOKEN}" --data title="开始编译【${SOURCE}-${MATRIX_TARGET}】" --data "content=🎉 主人：您正在使用【${REPOSITORY}】仓库【${MATRIX_TARGET}】文件夹编译【${LUCI_EDITION}-${SOURCE}】固件,请耐心等待...... 😋💐" "http://www.pushplus.plus/send"
+		curl -k --data token="${PUSH_PLUS_TOKEN}" --data title="开始编译【${SOURCE}-${MATRIX_TARGET}】" --data "content=🎉 主人：您正在使用【${REPOSITORY}】仓库【${MATRIX_TARGET}】文件夹编译【${SOURCE}-${LUCI_EDITION}】固件,请耐心等待...... 😋💐" "http://www.pushplus.plus/send"
 	fi
 }
 
