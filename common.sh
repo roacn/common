@@ -1194,8 +1194,12 @@ function compile_info() {
 	echo
 	
 	echo
-	__red_color "Github在线编译CPU型号"
-	__blue_color $(cat /proc/cpuinfo | grep name | cut -d: -f2 | uniq)
+	echo "CPU信息"
+	echo "--------------------------------------------------------------"
+	echo "物理CPU:$(grep "physical id" /proc/cpuinfo| sort| uniq| wc -l)"
+	echo "CPU核心:$(grep "cores" /proc/cpuinfo|uniq|awk '{print $4}')"
+	echo "CPU线程:$(grep -c "processor" /proc/cpuinfo)"
+	echo "CPU型号:$(cat /proc/cpuinfo | grep name | cut -d: -f2 | uniq | sed 's/^[[:space:]]\+//')"
 	echo
 	echo -e "常见CPU类型及性能排行:
 	Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz
@@ -1204,13 +1208,16 @@ function compile_info() {
 	Intel(R) Xeon(R) CPU E5-2673 v4 @ 2.30GHz
 	Intel(R) Xeon(R) CPU E5-2673 v3 @ 2.40GHz"
 	echo
-	
 	echo
-	__red_color "系统空间使用情况"
+	echo "内存信息"
+	echo "--------------------------------------------------------------"
+	free -m
+	echo
+	echo
+	echo "硬盘信息"
+	echo "--------------------------------------------------------------"
 	echo " 系统空间       类型   总数   已用   可用   使用率"
-	echo "=============================================================="
-	df -hT                                             
-	echo "=============================================================="
+	df -hT
 	echo
 	
 	echo
