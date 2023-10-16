@@ -1197,10 +1197,12 @@ function compile_info() {
 	echo
 	__red_color "CPU信息"
 	echo "--------------------------------------------------------------------------------"
-	echo "物理CPU:$(grep "physical id" /proc/cpuinfo| sort| uniq| wc -l)"
-	echo "CPU核心:$(grep "cores" /proc/cpuinfo|uniq|awk '{print $4}')"
-	echo "CPU线程:$(grep -c "processor" /proc/cpuinfo)"
-	echo "CPU型号:$(cat /proc/cpuinfo | grep name | cut -d: -f2 | uniq | sed 's/^[[:space:]]\+//')"
+	local cpu=$(grep "physical id" /proc/cpuinfo| sort| uniq| wc -l)
+	local cores=$(grep "cores" /proc/cpuinfo|uniq|awk '{print $4}')
+	local processor=$(grep -c "processor" /proc/cpuinfo)
+	local name=$(cat /proc/cpuinfo | grep name | cut -d: -f2 | uniq | sed 's/^[[:space:]]\+//')
+	echo "物理CPU:${cpu}	核心线程:${cores}/${processor}"
+	echo "CPU型号:${name}"
 	echo
 	echo -e "性能排行:
 	Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz
