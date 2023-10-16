@@ -229,12 +229,13 @@ function git_clone_source() {
 # 插件源仓库更新
 ################################################################################################################
 function update_packages() {
-	local gitdate_hms=$(curl -H "Authorization: token ${REPO_TOKEN}" -s "https://api.github.com/repos/${PACKAGES_ADDR}/actions/runs" | jq -r '.workflow_runs[0].created_at')
-	local gitdate_timestamp=$(date -d "$gitdate_hms" +%s)
+	local gitdate=$(curl -H "Authorization: token ${REPO_TOKEN}" -s "https://api.github.com/repos/${PACKAGES_ADDR}/actions/runs" | jq -r '.workflow_runs[0].created_at')
+	local gitdate_timestamp=$(date -d "$gitdate" +%s)
+	local gitdate_hms="$(date -d "$gitdate" '+%Y-%m-%d %H:%M:%S')"
 	echo "github latest merge upstream timestamp: ${gitdate_timestamp}, time: ${gitdate_hms}"
 	local now_hms="$(date '+%Y-%m-%d %H:%M:%S')"
 	local now_timestamp=$(date -d "$now_hms" +%s)
-	echo "time now timestamp: ${now_hms}, time: ${now_hms}"
+	echo "time now timestamp: ${now_timestamp}, time: ${now_hms}"
 	if [[ $(($gitdate_timestamp+1800)) < $now_timestamp ]]; then
 	curl -X POST https://api.github.com/repos/${PACKAGES_ADDR}/dispatches \
 	-H "Accept: application/vnd.github.everest-preview+json" \
@@ -1194,14 +1195,14 @@ function compile_info() {
 	echo
 	
 	echo
-	echo "CPU信息"
-	echo "--------------------------------------------------------------"
+	__red_color "CPU信息"
+	echo "--------------------------------------------------------------------------------"
 	echo "物理CPU:$(grep "physical id" /proc/cpuinfo| sort| uniq| wc -l)"
 	echo "CPU核心:$(grep "cores" /proc/cpuinfo|uniq|awk '{print $4}')"
 	echo "CPU线程:$(grep -c "processor" /proc/cpuinfo)"
 	echo "CPU型号:$(cat /proc/cpuinfo | grep name | cut -d: -f2 | uniq | sed 's/^[[:space:]]\+//')"
 	echo
-	echo -e "常见CPU类型及性能排行:
+	echo -e "性能排行:
 	Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz
 	Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz
 	Intel(R) Xeon(R) Platinum 8171M CPU @ 2.60GHz
@@ -1209,13 +1210,13 @@ function compile_info() {
 	Intel(R) Xeon(R) CPU E5-2673 v3 @ 2.40GHz"
 	echo
 	echo
-	echo "内存信息"
-	echo "--------------------------------------------------------------"
+	__red_color "内存信息"
+	echo "--------------------------------------------------------------------------------"
 	free -m
 	echo
 	echo
-	echo "硬盘信息"
-	echo "--------------------------------------------------------------"
+	__red_color "硬盘信息"
+	echo "--------------------------------------------------------------------------------"
 	echo " 系统空间       类型   总数   已用   可用   使用率"
 	df -hT
 	echo
