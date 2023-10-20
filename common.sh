@@ -1126,6 +1126,7 @@ function make_defconfig() {
 function compile_info() {	
 	echo
 	__red_color "固件信息"
+	echo "--------------------------------------------------------------------------------"
 	__blue_color "编译源码: ${SOURCE}"
 	__blue_color "源码链接: ${SOURCE_URL}"
 	__blue_color "源码分支: ${SOURCE_BRANCH}"
@@ -1142,10 +1143,12 @@ function compile_info() {
 
 	echo
 	__red_color "固件类型"
+	echo "--------------------------------------------------------------------------------"
 	if [[ "${FIRMWARE_TYPE}" == "lxc" ]]; then
 		__blue_color "LXC固件：开启"
 		echo
 		__red_color "固件更新"
+		echo "--------------------------------------------------------------------------------"
 		__white_color "1、PVE运行："
 		__green_color "wget https://ghproxy.com/https://raw.githubusercontent.com/roacn/pve/main/openwrt.lxc.sh -O /usr/bin/openwrt && chmod +x /usr/bin/openwrt"
 		__white_color "2、PVE运行："
@@ -1155,6 +1158,7 @@ function compile_info() {
 		__white_color "LXC固件：关闭"
 		echo
 		__red_color "固件更新"
+		echo "--------------------------------------------------------------------------------"
 		__blue_color "插件版本: ${AUTOUPDATE_VERSION}"
 		
 		if [[ "${TARGET_BOARD}" == "x86" ]]; then
@@ -1172,6 +1176,7 @@ function compile_info() {
 	
 	echo
 	__red_color "编译选项"
+	echo "--------------------------------------------------------------------------------"
 	if [[ "${UPLOAD_RELEASE}" == "true" ]]; then
 		__blue_color "发布firmware+ipk至Github Relese: 开启"
 	else
@@ -1230,6 +1235,7 @@ function compile_info() {
 	echo "${plugin_2}" >plugins_info
 	if [ -n "$(ls -A "${HOME_PATH}/plugins_info" 2>/dev/null)" ]; then
 		__red_color "插件列表"
+		echo "--------------------------------------------------------------------------------"
 		chmod -Rf +x ${HOME_PATH}/plugins_info
 		source ${HOME_PATH}/plugins_info
 		rm -rf ${HOME_PATH}/plugins_info
@@ -1237,7 +1243,8 @@ function compile_info() {
 	fi
 	
 	if [[ -s ${CONFFLICTIONS} ]]; then
-		__red_color "插件冲突信息"
+		__red_color "冲突信息"
+		echo "--------------------------------------------------------------------------------"
 		chmod +x ${CONFFLICTIONS} && source ${CONFFLICTIONS}
 		rm -rf ${CONFFLICTIONS}
 	fi
