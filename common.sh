@@ -150,7 +150,7 @@ function parse_settings() {
 	
 	# 文件
 	echo DIFFCONFIG_TXT="${GITHUB_WORKSPACE}/diffconfig.txt" >> ${GITHUB_ENV}
-	echo RELEASEINFO_MD="${GITHUB_WORKSPACE}/openwrt/build/${MATRIX_TARGET}/releaseinfo.md" >> ${GITHUB_ENV}
+	echo RELEASEINFO_MD="${GITHUB_WORKSPACE}/openwrt/build/${MATRIX_TARGET}/release/releaseinfo.md" >> ${GITHUB_ENV}
 	echo SETTINGS_INI="${GITHUB_WORKSPACE}/openwrt/build/${MATRIX_TARGET}/settings.ini" >> ${GITHUB_ENV}
 	echo FILES_TO_CLEAR="${GITHUB_WORKSPACE}/openwrt/default_clear" >> ${GITHUB_ENV}
 	echo CONFFLICTIONS="${GITHUB_WORKSPACE}/openwrt/confflictions" >> ${GITHUB_ENV}
@@ -1225,14 +1225,14 @@ function compile_info() {
 	
 	echo
 	cd ${HOME_PATH}
-	plugin_1="$(grep -Eo "CONFIG_PACKAGE_luci-app-.*=y|CONFIG_PACKAGE_luci-theme-.*=y" .config |grep -v 'INCLUDE\|_Proxy\|_static\|_dynamic' |sed 's/=y//' |sed 's/CONFIG_PACKAGE_//g')"
-	plugin_2="$(echo "${plugin_1}" |sed 's/^/、/g' |sed 's/$/\"/g' |awk '$0=NR$0' |sed 's/^/__blue_color \"       /g')"
-	echo "${plugin_2}" >plugin_info
-	if [ -n "$(ls -A "${HOME_PATH}/plugin_info" 2>/dev/null)" ]; then
+	local plugin_1="$(grep -Eo "CONFIG_PACKAGE_luci-app-.*=y|CONFIG_PACKAGE_luci-theme-.*=y" .config |grep -v 'INCLUDE\|_Proxy\|_static\|_dynamic' |sed 's/=y//' |sed 's/CONFIG_PACKAGE_//g')"
+	local plugin_2="$(echo "${plugin_1}" |sed 's/^/、/g' |sed 's/$/\"/g' |awk '$0=NR$0' |sed 's/^/__blue_color \"       /g')"
+	echo "${plugin_2}" >plugins_info
+	if [ -n "$(ls -A "${HOME_PATH}/plugins_info" 2>/dev/null)" ]; then
 		__red_color "插件列表"
-		chmod -Rf +x ${HOME_PATH}/plugin_info
-		source ${HOME_PATH}/plugin_info
-		rm -rf ${HOME_PATH}/plugin_info
+		chmod -Rf +x ${HOME_PATH}/plugins_info
+		source ${HOME_PATH}/plugins_info
+		rm -rf ${HOME_PATH}/plugins_info
 		echo
 	fi
 	
@@ -1249,8 +1249,9 @@ function compile_info() {
 function update_repo() {
 	local repo_path="${GITHUB_WORKSPACE}/repo"
 	local repo_matrix_target_path="${repo_path}/build/${MATRIX_TARGET}"
-	local repo_config_path="${repo_path}/build/${MATRIX_TARGET}/config"
-	local repo_settings_ini="${repo_path}/build/${MATRIX_TARGET}/settings.ini"
+	local repo_config_file="${repo_matrix_target_path}/config/${CONFIG_FILE}"
+	local repo_settings_ini="${repo_matrix_target_path}/settings.ini"
+	local repo_plugins="${repo_matrix_target_path}/release/plugins"
 	
 	[[ -d "${repo_path}" ]] && rm -rf ${repo_path}
 
@@ -1276,19 +1277,16 @@ function update_repo() {
 	
 	# 更新.config文件
 	# ${HOME_PATH}/scripts/diffconfig.sh > ${DIFFCONFIG_TXT}
-	if [[ "$(cat ${DIFFCONFIG_TXT})" != "$(cat ${repo_config_path}/${CONFIG_FILE})" ]]; then
+	if [[ "$(cat ${DIFFCONFIG_TXT})" != "$(cat ${repo_config_file})" ]]; then
 		ENABLE_REPO_UPDATE="true"
-		cp -rf ${DIFFCONFIG_TXT} ${repo_config_path}/${CONFIG_FILE}
+		cp -rf ${DIFFCONFIG_TXT} ${repo_config_file}
 	fi
 	
 	# 更新plugins插件列表
-	plugin_1="$(grep -Eo "CONFIG_PACKAGE_luci-app-.*=y|CONFIG_PACKAGE_luci-theme-.*=y" ${HOME_PATH}/.config |grep -v 'INCLUDE\|_Proxy\|_static\|_dynamic' |sed 's/=y//' |sed 's/CONFIG_PACKAGE_//g')"
-	plugin_2="$(echo "${plugin_1}" |sed 's/^/、/g' |awk '$0=NR$0')"
-	echo "${plugin_2}" > ${HOME_PATH}/plugin_list
-	if [[ "$(cat ${HOME_PATH}/plugin_list)" != "$(cat ${repo_matrix_target_path}/plugins)" ]]; then
+	local plugins="$(grep -Eo "CONFIG_PACKAGE_luci-app-.*=y|CONFIG_PACKAGE_luci-theme-.*=y" ${HOME_PATH}/.config |grep -v 'INCLUDE\|_Proxy\|_static\|_dynamic' |sed 's/=y//' |sed 's/CONFIG_PACKAGE_//g')"
+	if [[ "${plugins}" != "$(cat ${repo_plugins})" ]]; then
 		ENABLE_REPO_UPDATE="true"
-		# 覆盖原plugin文件
-		mv -f ${HOME_PATH}/plugin_list ${repo_matrix_target_path}/plugins > /dev/null 2>&1
+		echo "${plugins}" > ${repo_plugins}
 	fi
 	
 	# 提交commit，更新repo
