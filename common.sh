@@ -1147,6 +1147,7 @@ function compile_info() {
 	if [[ "${FIRMWARE_TYPE}" == "lxc" ]]; then
 		__blue_color "LXC固件：开启"
 		echo
+		echo
 		__red_color "固件更新"
 		echo "--------------------------------------------------------------------------------"
 		__white_color "1、PVE运行："
@@ -1156,6 +1157,7 @@ function compile_info() {
 		echo
 	else
 		__white_color "LXC固件：关闭"
+		echo
 		echo
 		__red_color "固件更新"
 		echo "--------------------------------------------------------------------------------"
