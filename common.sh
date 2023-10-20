@@ -1211,7 +1211,7 @@ function compile_info() {
 	echo "物理CPU:${cpu}	核心线程:${cores}/${processor}"
 	echo -e "CPU型号:\033[34m${name}\033[0m"
 	echo
-	echo -e "性能排行:
+	echo -e "Github在线编译，常见CPU性能排行:
 	Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz
 	Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz
 	Intel(R) Xeon(R) Platinum 8171M CPU @ 2.60GHz
