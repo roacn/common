@@ -12,9 +12,11 @@ fi
 if [[ -f "/usr/lib/lua/luci/controller/ttyd.lua" ]]; then
 	sed -i 's?services?system?g' "/usr/lib/lua/luci/controller/ttyd.lua"
 fi
-if [[ -f "/etc/init.d/rebootschedule" ]]; then
-	chmod 0755 /etc/init.d/rebootschedule
-fi
+
+# 修复部分自启动服务、插件无运行权限的bug
+for file in $(ls /etc/init.d); do
+	chmod +x /etc/init.d/$file
+done
 
 # chmod 0777 /etc/opkg/distfeeds.conf
 if [[ `grep -c "openwrt_pkg" /etc/opkg/distfeeds.conf` -ge '1' ]]; then
