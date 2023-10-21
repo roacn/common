@@ -96,7 +96,21 @@ function parse_settings() {
 		SOURCE_URL="https://github.com/openwrt/openwrt"
 		SOURCE="official"
 		SOURCE_OWNER="openwrt's"
-		LUCI_EDITION="$(echo "${SOURCE_BRANCH}" |sed 's/openwrt-//g')"
+		LUCI_EDITION="$(echo ${SOURCE_BRANCH} |sed 's/openwrt-//g')"
+		PACKAGE_BRANCH="Official"
+	;;
+	lienol|Lienol|LIENOL)
+		SOURCE_URL="https://github.com/Lienol/openwrt"
+		SOURCE="lienol"
+		SOURCE_OWNER="Lienol's"
+		LUCI_EDITION="$(echo ${SOURCE_BRANCH})"
+		PACKAGE_BRANCH="Official"
+	;;
+	immortalwrt|Immortalwrt|IMMORTALWRT|mortal|immortal)
+		SOURCE_URL="https://github.com/immortalwrt/immortalwrt"
+		SOURCE="Immortalwrt"
+		SOURCE_OWNER="Immortalwrt's"
+		LUCI_EDITION="$(echo ${SOURCE_BRANCH} |sed 's/openwrt-//g')"
 		PACKAGE_BRANCH="Official"
 	;;
 	*)
@@ -262,6 +276,10 @@ function do_diy() {
 		diy_lede
 	elif [[ "${SOURCE}" =~ (openwrt|Openwrt|OpenWrt|OpenWRT|OPENWRT|official|Official|OFFICIAL) ]]; then
 		diy_openwrt
+	elif [[ "${SOURCE}" =~ (lienol|Lienol|LIENOL) ]]; then
+		diy_lienol
+	elif [[ "${SOURCE}" =~ (immortalwrt|Immortalwrt|IMMORTALWRT|mortal|immortal) ]]; then
+		diy_immortalwrt
 	fi
 	
 	# 执行diy_part.sh脚本
@@ -509,6 +527,36 @@ function diy_openwrt() {
 	
 	echo
 	echo "--------------common_diy_openwrt end--------------"
+}
+
+################################################################################################################
+# LIENOL源码库的私有脚本(LIENOL源码对应的修改，请在此处)
+################################################################################################################
+function diy_lienol() {
+	echo "--------------common_diy_lienol start--------------"
+	echo
+	
+	cd ${HOME_PATH}
+
+	echo "reserved for test."
+	
+	echo
+	echo "--------------common_diy_lienol end--------------"
+}
+
+################################################################################################################
+# IMMORTALWRT源码库的私有脚本(IMMORTALWRT源码对应的修改，请在此处)
+################################################################################################################
+function diy_immortalwrt() {
+	echo "--------------common_diy_immortalwrt start--------------"
+	echo
+	
+	cd ${HOME_PATH}
+
+	echo "reserved for test."
+	
+	echo
+	echo "--------------common_diy_immortalwrt end--------------"
 }
 
 ################################################################################################################
