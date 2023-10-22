@@ -365,14 +365,12 @@ function diy_public() {
 	# 检查.config文件是否存在
 	if [ -z "$(ls -A "${CONFIG_PATH}/${CONFIG_FILE}" 2>/dev/null)" ]; then
 		__error_msg "编译脚本的[${MATRIX_TARGET}配置文件夹内缺少${CONFIG_FILE}文件],请在[${MATRIX_TARGET}/config/]文件夹内补齐"
-		echo
 		exit 1
 	fi
 	
 	# 检查diy_part.sh文件是否存在
 	if [ -z "$(ls -A "${MATRIX_TARGET_PATH}/${DIY_PART_SH}" 2>/dev/null)" ]; then
 		__error_msg "编译脚本的[${MATRIX_TARGET}文件夹内缺少${DIY_PART_SH}文件],请在[${MATRIX_TARGET}]文件夹内补齐"
-		echo
 		exit 1
 	fi
 
@@ -392,7 +390,7 @@ function diy_public() {
 	
 	__yellow_color "开始执行补丁文件..."
 	# 打补丁
-	sudo rm -rf ${MATRIX_TARGET_PATH}/patches/{LICENSE,*README*,*readme*} > /dev/null 2>&1
+	sudo rm -rf ${MATRIX_TARGET_PATH}/patches/{*README*,*readme*} > /dev/null 2>&1
 	if [ -n "$(ls -A "${MATRIX_TARGET_PATH}/patches" 2>/dev/null)" ]; then
 		find "${MATRIX_TARGET_PATH}/patches" -type f -name '*.patch' -print0 | sort -z | xargs -I % -t -0 -n 1 sh -c "cat '%'  | patch -d './' -p1 --forward --no-backup-if-mismatch"
 	fi
