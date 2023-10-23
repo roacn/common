@@ -153,7 +153,8 @@ function parse_settings() {
 	echo COMPILE_DATE_STAMP="$(date -d "$(date +'%Y-%m-%d %H:%M:%S')" +%s)" >> ${GITHUB_ENV}
 	
 	# 路径
-	echo HOME_PATH="${GITHUB_WORKSPACE}/openwrt" >> ${GITHUB_ENV}
+	HOME_PATH="${GITHUB_WORKSPACE}/openwrt"
+	echo HOME_PATH="${HOME_PATH}" >> ${GITHUB_ENV}
 	echo BIN_PATH="${HOME_PATH}/bin" >> ${GITHUB_ENV}
 	echo AUTOUPDATE_PATH="${HOME_PATH}/bin/autoupdate" >> ${GITHUB_ENV}
 	echo FEEDS_PATH="${HOME_PATH}/feeds" >> ${GITHUB_ENV}
