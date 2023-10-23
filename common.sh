@@ -164,7 +164,7 @@ function parse_settings() {
 	echo CONFIG_PATH="${HOME_PATH}/build/${MATRIX_TARGET}/config" >> ${GITHUB_ENV}
 	
 	# 文件
-	echo DIFFCONFIG_TXT="${GITHUB_WORKSPACE}/diffconfig.txt" >> ${GITHUB_ENV}
+	echo DIFFCONFIG_TXT="${HOME_PATH}/diffconfig.txt" >> ${GITHUB_ENV}
 	echo RELEASEINFO_MD="${HOME_PATH}/build/${MATRIX_TARGET}/release/releaseinfo.md" >> ${GITHUB_ENV}
 	echo SETTINGS_INI="${HOME_PATH}/build/${MATRIX_TARGET}/settings.ini" >> ${GITHUB_ENV}
 	echo FILES_TO_CLEAR="${HOME_PATH}/default_clear" >> ${GITHUB_ENV}
