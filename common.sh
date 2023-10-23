@@ -478,6 +478,10 @@ function diy_public() {
 		EOF
 	fi
 	
+	__yellow_color "目录文件..."
+	echo "${HOME_PATH}:"
+	ls ${HOME_PATH}	
+	
 	echo
 	echo "--------------common_diy_public end--------------"
 }
@@ -1159,6 +1163,8 @@ function firmware_settings() {
 ################################################################################################################
 function make_defconfig() {
 	cd ${HOME_PATH}
+	echo "files under ${HOME_PATH}:"
+	ls -l ${HOME_PATH}
 	
 	# 生成.config文件
 	make defconfig > /dev/null
@@ -1362,6 +1368,8 @@ function update_repo() {
 ################################################################################################################
 function organize_firmware() {
 	cd ${FIRMWARE_PATH}
+	echo "files under ${HOME_PATH}:"
+	ls -l ${HOME_PATH}
 	echo "files under ${FIRMWARE_PATH}:"
 	ls -l ${FIRMWARE_PATH}
 
