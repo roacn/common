@@ -10,6 +10,8 @@
 
 
 
+
+
 ### 1、settings.ini文件设置
 
 在`build`目录的子文件夹内，把`settings.ini`中的设置如下：
@@ -17,6 +19,8 @@
 ```ini
 ENABLE_CACHEWRTBUILD="true"
 ```
+
+
 
 
 
@@ -43,6 +47,8 @@ CONFIG_CCACHE=y
 
 
 
+
+
 ### 1、清除对应的缓存文件
 
 按照如下操作：
@@ -50,6 +56,12 @@ CONFIG_CCACHE=y
 点击存储库`Actions` -> `Caches` -> 选择需要删除的缓存，点击右侧`垃圾桶`图标，即可删除相应缓存。
 
 然后尝试全新编译。
+
+
+
+![ccache](imgs/ccache.png)
+
+
 
 
 
