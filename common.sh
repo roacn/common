@@ -583,6 +583,9 @@ function modify_config() {
 		sed -i '/CONFIG_CCACHE/d' ${HOME_PATH}/.config > /dev/null 2>&1
 		sed -i '$a CONFIG_DEVEL=y' ${HOME_PATH}/.config > /dev/null 2>&1
 		sed -i '$a CONFIG_CCACHE=y' ${HOME_PATH}/.config > /dev/null 2>&1
+	else
+		sed -i '/CONFIG_DEVEL/d' ${HOME_PATH}/.config > /dev/null 2>&1
+		sed -i '/CONFIG_CCACHE/d' ${HOME_PATH}/.config > /dev/null 2>&1
 	fi
 	
 	# lxc模式下编译.tar.gz固件
