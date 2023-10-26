@@ -21,7 +21,7 @@
 在`build`目录的子文件夹内，把`settings.ini`中的设置如下：
 
 ```ini
-ENABLE_CACHEWRTBUILD="true"
+ENABLE_CCACHE="true"
 ```
 
 
@@ -76,7 +76,7 @@ CONFIG_CCACHE=y
 在`build`目录的子文件夹内，把`settings.ini`中的设置如下
 
 ```ini
-ENABLE_CACHEWRTBUILD="false"
+ENABLE_CCACHE="false"
 ```
 
 
