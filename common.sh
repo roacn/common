@@ -715,8 +715,8 @@ function modify_config() {
 	fi
 	
 	if [[ `grep -c "CONFIG_TARGET_x86=y" ${HOME_PATH}/.config` -eq '1' ]] || [[ `grep -c "CONFIG_TARGET_rockchip=y" ${HOME_PATH}/.config` -eq '1' ]] || [[ `grep -c "CONFIG_TARGET_bcm27xx=y" ${HOME_PATH}/.config` -eq '1' ]]; then
-		sed -i '/CONFIG_TARGET_IMAGES_GZIP/d' ${HOME_PATH}/.config
-		sed -i '$a CONFIG_TARGET_IMAGES_GZIP=y' ${HOME_PATH}/.config
+		#sed -i '/CONFIG_TARGET_IMAGES_GZIP/d' ${HOME_PATH}/.config
+		#sed -i '$a CONFIG_TARGET_IMAGES_GZIP=y' ${HOME_PATH}/.config
 		#sed -i '/CONFIG_PACKAGE_snmpd/d' ${HOME_PATH}/.config
 		#sed -i '$a CONFIG_PACKAGE_snmpd=y' ${HOME_PATH}/.config
 		sed -i '/CONFIG_PACKAGE_openssh-sftp-server/d' ${HOME_PATH}/.config
@@ -731,8 +731,8 @@ function modify_config() {
 	fi
 	
 	if [[ `grep -c "CONFIG_TARGET_mxs=y" ${HOME_PATH}/.config` -eq '1' ]] || [[ `grep -c "CONFIG_TARGET_sunxi=y" ${HOME_PATH}/.config` -eq '1' ]] || [[ `grep -c "CONFIG_TARGET_zynq=y" ${HOME_PATH}/.config` -eq '1' ]]; then	
-		sed -i '/CONFIG_TARGET_IMAGES_GZIP/d' ${HOME_PATH}/.config
-		sed -i '$a CONFIG_TARGET_IMAGES_GZIP=y' ${HOME_PATH}/.config
+		#sed -i '/CONFIG_TARGET_IMAGES_GZIP/d' ${HOME_PATH}/.config
+		#sed -i '$a CONFIG_TARGET_IMAGES_GZIP=y' ${HOME_PATH}/.config
 		sed -i '/CONFIG_PACKAGE_openssh-sftp-server/d' ${HOME_PATH}/.config
 		sed -i '$a CONFIG_PACKAGE_openssh-sftp-server=y' ${HOME_PATH}/.config
 		if [[ `grep -c "CONFIG_TARGET_ROOTFS_PARTSIZE=" ${HOME_PATH}/.config` -eq '1' ]]; then
@@ -748,17 +748,6 @@ function modify_config() {
 		sed -i 's/CONFIG_PACKAGE_luci-app-autoupdate=y/# CONFIG_PACKAGE_luci-app-autoupdate is not set/g' ${HOME_PATH}/.config
 		sed -i '/CONFIG_TARGET_ROOTFS_TARGZ/d' ${HOME_PATH}/.config
 		sed -i '$a CONFIG_TARGET_ROOTFS_TARGZ=y' ${HOME_PATH}/.config
-	fi
-		
-	if [[ `grep -c "CONFIG_TARGET_ROOTFS_EXT4FS=y" ${HOME_PATH}/.config` -eq '1' ]]; then	
-		local partsize="$(grep -Eo "CONFIG_TARGET_ROOTFS_PARTSIZE=[0-9]+" ${HOME_PATH}/.config |cut -f2 -d=)"
-		if [[ "${partsize}" -lt "800" ]];then
-			sed -i '/CONFIG_TARGET_ROOTFS_PARTSIZE/d' ${HOME_PATH}/.config
-			sed -i '$a CONFIG_TARGET_ROOTFS_PARTSIZE=800' ${HOME_PATH}/.config
-			echo "__error_msg \"EXT4提示：请注意，您选择了ext4安装的固件格式,而检测到您的分配的固件系统分区过小\"" >> ${CONFFLICTIONS}
-			echo "__error_msg \"为避免编译出错,已自动帮您修改成950M\"" >> ${CONFFLICTIONS}
-			echo "" >> ${CONFFLICTIONS}
-		fi
 	fi
 	
 	if [[ `grep -c "CONFIG_PACKAGE_luci-app-adblock=y" ${HOME_PATH}/.config` -eq '1' ]]; then
@@ -821,14 +810,6 @@ function modify_config() {
 			echo "" >> ${CONFFLICTIONS}
 		fi
 	fi
-		
-	#if [[ `grep -c "CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Trojan_Plus=y" ${HOME_PATH}/.config` -eq '1' ]]; then
-	#	if [[ `grep -c "CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Trojan_GO=y" ${HOME_PATH}/.config` -eq '1' ]]; then
-	#		sed -i 's/CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Trojan_GO=y/# CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Trojan_GO is not set/g' ${HOME_PATH}/.config
-	#		echo "__error_msg \"您选择了passwall的Trojan_GO，会和passwall的Trojan_Plus冲突导致编译错误，只能二选一，已删除Trojan_GO\"" >> ${CONFFLICTIONS}
-	#		echo "" >> ${CONFFLICTIONS}
-	#	fi
-	#fi
 	
 	if [[ `grep -c "CONFIG_PACKAGE_luci-app-qbittorrent=y" ${HOME_PATH}/.config` -eq '1' ]]; then
 		if [[ `grep -c "CONFIG_PACKAGE_luci-app-qbittorrent-simple=y" ${HOME_PATH}/.config` -eq '1' ]]; then
