@@ -246,7 +246,7 @@ function update_packages() {
 		curl -X POST https://api.github.com/repos/${PACKAGES_ADDR}/dispatches \
 		-H "Accept: application/vnd.github.everest-preview+json" \
 		-H "Authorization: token ${REPO_TOKEN}" \
-		--data "{\"event_type\": \"updated by ${REPOSITORY}\"}"
+		--data "{\"event_type\": \"updated by ${GITHUB_REPOSITORY##*/}\"}"
 	fi
 	__info_msg "packages url: https://github.com/${PACKAGES_ADDR}"
 }
