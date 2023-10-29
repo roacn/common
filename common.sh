@@ -243,10 +243,10 @@ function update_packages() {
 	local now_timestamp=$(date -d "$now_hms" +%s)
 	echo "time now timestamp: ${now_timestamp}, time: ${now_hms}"
 	if [[ $(($gitdate_timestamp+1800)) < $now_timestamp ]]; then
-	curl -X POST https://api.github.com/repos/${PACKAGES_ADDR}/dispatches \
-	-H "Accept: application/vnd.github.everest-preview+json" \
-	-H "Authorization: token ${REPO_TOKEN}" \
-	--data "{\"event_type\": \"updated by ${REPOSITORY}\"}"
+		curl -X POST https://api.github.com/repos/${PACKAGES_ADDR}/dispatches \
+		-H "Accept: application/vnd.github.everest-preview+json" \
+		-H "Authorization: token ${REPO_TOKEN}" \
+		--data "{\"event_type\": \"updated by ${REPOSITORY}\"}"
 	fi
 	__info_msg "packages url: https://github.com/${PACKAGES_ADDR}"
 }
