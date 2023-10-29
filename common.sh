@@ -66,11 +66,13 @@ function parse_settings() {
 	if [[ ${PACKAGES_ADDR} =~ (default|DEFAULT|Default) ]]; then
 		PACKAGES_ADDR="roacn/openwrt-packages"
 	fi
-	if [[ ${ENABLE_PACKAGES_UPDATE} == "true" ]]; then
-		local package_repo_owner=`echo "${PACKAGES_ADDR}" | awk -F/ '{print $1}'` 2>/dev/null
-		if [[ ${package_repo_owner} != ${GITHUB_ACTOR} ]]; then
-			ENABLE_PACKAGES_UPDATE="false"
-		fi
+	
+	local package_repo_owner=`echo "${PACKAGES_ADDR}" | awk -F/ '{print $1}'` 2>/dev/null
+	if [[ ${package_repo_owner} == ${GITHUB_ACTOR} ]]; then
+		ENABLE_PACKAGES_UPDATE="true"
+		update_packages
+	else
+		ENABLE_PACKAGES_UPDATE="false"
 	fi
 	
 	case "${SOURCE_ABBR}" in
