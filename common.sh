@@ -389,9 +389,9 @@ function diy_public() {
 	# openwrt.sh
 	#[[ ! -d "${FILES_PATH}/usr/bin" ]] && mkdir -p ${FILES_PATH}/usr/bin
 	#if [[ "${FIRMWARE_TYPE}" == "lxc" ]]; then
-	#	cp -rf ${COMMON_PATH}/custom/openwrt.lxc.sh ${FILES_PATH}/usr/bin/openwrt && sudo chmod +x ${FILES_PATH}/usr/bin/openwrt
+	#	wget https://ghproxy.com/https://raw.githubusercontent.com/roacn/pve/main/openwrt.lxc.sh -O /usr/bin/openwrt ${FILES_PATH}/usr/bin/openwrt && sudo chmod +x ${FILES_PATH}/usr/bin/openwrt
 	#else
-	#	cp -rf ${COMMON_PATH}/custom/openwrt.sh ${FILES_PATH}/usr/bin/openwrt && sudo chmod +x ${FILES_PATH}/usr/bin/openwrt
+	#	wget https://raw.githubusercontent.com/roacn/luci-app-autoupdate/main/root/usr/bin/autoupdate -O  ${FILES_PATH}/usr/bin/openwrt && sudo chmod +x ${FILES_PATH}/usr/bin/openwrt
 	#fi
 	
 	__yellow_color "开始设置自动更新插件..."
