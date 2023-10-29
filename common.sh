@@ -59,8 +59,8 @@ function parse_settings() {
 		NOTICE_TYPE="TG"
 	elif [[ ${NOTICE_TYPE} =~ (PUSH|pushplus|Pushplus|PUSHPLUS) ]]; then
 		NOTICE_TYPE="PUSH"
-	elif [[ ${NOTICE_TYPE} =~ (WX|wechat|Wechat|WeChat|WECHAT) ]]; then
-		NOTICE_TYPE="WX"
+	else
+		NOTICE_TYPE="false"
 	fi
 
 	if [[ ${PACKAGES_ADDR} =~ (default|DEFAULT|Default) ]]; then
