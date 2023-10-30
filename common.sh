@@ -62,7 +62,7 @@ function parse_settings() {
 	else
 		NOTICE_TYPE="false"
 	fi
-
+	
 	if [[ ${PACKAGES_ADDR} =~ (default|DEFAULT|Default) ]]; then
 		PACKAGES_ADDR="roacn/openwrt-packages"
 	fi
@@ -81,28 +81,28 @@ function parse_settings() {
 		SOURCE="lede"
 		SOURCE_OWNER="Lean's"
 		LUCI_EDITION="18.06"
-		PACKAGE_BRANCH="Lede"
+		#PACKAGES_BRANCH="Lede"
 	;;
 	openwrt|Openwrt|OpenWrt|OpenWRT|OPENWRT|official|Official|OFFICIAL)
 		SOURCE_URL="https://github.com/openwrt/openwrt"
 		SOURCE="official"
 		SOURCE_OWNER="openwrt's"
 		LUCI_EDITION="$(echo ${SOURCE_BRANCH} |sed 's/openwrt-//g')"
-		PACKAGE_BRANCH="Official"
+		#PACKAGES_BRANCH="Official"
 	;;
 	lienol|Lienol|LIENOL)
 		SOURCE_URL="https://github.com/Lienol/openwrt"
 		SOURCE="lienol"
 		SOURCE_OWNER="Lienol's"
 		LUCI_EDITION="$(echo ${SOURCE_BRANCH})"
-		PACKAGE_BRANCH="Official"
+		#PACKAGES_BRANCH="Official"
 	;;
 	immortalwrt|Immortalwrt|IMMORTALWRT|mortal|immortal)
 		SOURCE_URL="https://github.com/immortalwrt/immortalwrt"
 		SOURCE="Immortalwrt"
 		SOURCE_OWNER="Immortalwrt's"
 		LUCI_EDITION="$(echo ${SOURCE_BRANCH} |sed 's/openwrt-//g')"
-		PACKAGE_BRANCH="Official"
+		#PACKAGES_BRANCH="Official"
 	;;
 	*)
 		__error_msg "不支持${SOURCE_ABBR}源码"
@@ -127,7 +127,7 @@ function parse_settings() {
 	echo SOURCE_URL="${SOURCE_URL}" >> ${GITHUB_ENV}
 	echo SOURCE_OWNER="${SOURCE_OWNER}" >> ${GITHUB_ENV}
 	echo LUCI_EDITION="${LUCI_EDITION}" >> ${GITHUB_ENV}
-	echo PACKAGE_BRANCH="${PACKAGE_BRANCH}" >> ${GITHUB_ENV}	
+	echo PACKAGES_BRANCH="${PACKAGES_BRANCH}" >> ${GITHUB_ENV}	
 	echo REPOSITORY="${GITHUB_REPOSITORY##*/}" >> ${GITHUB_ENV}
 	echo DIY_PART_SH="${DIY_PART_SH}" >> ${GITHUB_ENV}
 	echo BIOS_MODE="${BIOS_MODE}" >> ${GITHUB_ENV}
@@ -201,7 +201,7 @@ function notice_end() {
 function init_environment() {
 	sudo -E apt-get -qq update -y
 	sudo -E apt-get -qq full-upgrade -y
-	sudo -E apt-get -qq install -y ack antlr3 aria2 asciidoc autoconf automake autopoint binutils bison build-essential bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex g++-multilib gawk gcc-multilib gettext git git-core gperf haveged help2man intltool lib32stdc++6 libc6-dev-i386 libelf-dev libglib2.0-dev libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libpcap0.8-dev libpython3-dev libreadline-dev libssl-dev libtool libz-dev lrzsz mkisofs msmtp nano ninja-build p7zip p7zip-full patch pkgconf python2.7 python3 python3-pip qemu-utils rename rsync scons squashfs-tools subversion swig texinfo uglifyjs unzip upx upx-ucl vim wget xmlto xxd zlib1g-dev
+	sudo -E apt-get -qq install -y ack antlr3 aria2 asciidoc autoconf automake autopoint binutils bison build-essential bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex g++-multilib gawk gcc-multilib gettext git git-core gperf haveged help2man intltool lib32stdc++6 libc6-dev-i386 libelf-dev libglib2.0-dev libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libpcap0.8-dev libpython3-dev libreadline-dev libssl-dev libtool libz-dev lrzsz mkisofs msmtp nano ninja-build p7zip p7zip-full patch pkgconf python2.7 python3 python3-pip qemu-utils rename rsync scons squashfs-tools subversion swig texinfo tree uglifyjs unzip upx upx-ucl vim wget xmlto xxd zlib1g-dev
 	sudo -E apt-get -qq autoremove -y --purge
 	sudo -E apt-get -qq clean
 	sudo timedatectl set-timezone "$TZ"
@@ -299,7 +299,7 @@ function update_feeds() {
 	# 添加插件源
 	__yellow_color "开始添加插件源..."
 	local packages_url="https://github.com/${PACKAGES_ADDR}.git"
-	local packages_branch="${PACKAGE_BRANCH}"
+	local packages_branch="${PACKAGES_BRANCH}"
 	local packages="pkg${GITHUB_ACTOR}"
 	__info_msg "源码：${SOURCE} 插件源：${packages_url} 插件源分支：${packages_branch} 文件夹：${packages}"
 	
@@ -1154,7 +1154,7 @@ function firmware_settings() {
 function make_defconfig() {
 	cd ${HOME_PATH}
 	echo "files under ${HOME_PATH}:"
-	ls -l /${MATRIX_TARGET}/openwrt
+	tree -L 2
 	
 	# 生成.config文件
 	make defconfig > /dev/null
@@ -1454,7 +1454,7 @@ function organize_firmware() {
 function release_info() {
 	cd ${MATRIX_TARGET_PATH}
 	__yellow_color "开始准备固件发布信息..."
-	local diy_part_ipaddr=`awk '{print $3}' ${MATRIX_TARGET_PATH}/$DIY_PART_SH | awk -F= '$1 == "network.lan.ipaddr" {print $2}' | sed "s/'//g" 2>/dev/null`
+	local diy_part_ipaddr=`awk '{print $3}' ${MATRIX_TARGET_PATH}/${DIY_PART_SH} | awk -F= '$1 == "network.lan.ipaddr" {print $2}' | sed "s/'//g" 2>/dev/null`
 	local release_ipaddr=${diy_part_ipaddr:-192.168.1.1}
 	
 	sed -i "s#release_device#${TARGET_PROFILE}#" ${RELEASEINFO_MD} > /dev/null 2>&1
