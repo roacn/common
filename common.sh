@@ -161,6 +161,7 @@ function parse_settings() {
 	echo FILES_TO_CLEAR="${HOME_PATH}/default_clear" >> ${GITHUB_ENV}
 	echo CONFFLICTIONS="${HOME_PATH}/confflictions" >> ${GITHUB_ENV}
 	
+	# 源码files文件夹
 	# https://github.com/coolsnowwolf/lede/tree/master/package/base-files/files
 	echo FILES_PATH="${HOME_PATH}/package/base-files/files" >> ${GITHUB_ENV}
 	echo FILE_DEFAULT_UCI="${HOME_PATH}/package/base-files/files/etc/default_uci" >> ${GITHUB_ENV}
@@ -223,7 +224,6 @@ function git_clone_source() {
 	# 将build等文件夹复制到openwrt文件夹下
 	cd ${GITHUB_WORKSPACE}
 	cp -rf $(find ./ -maxdepth 1 -type d ! -path './openwrt' ! -path './') ${HOME_PATH}/
-	#rm -rf ${HOME_PATH}/build/ && cp -rf ${GITHUB_WORKSPACE}/build/ ${HOME_PATH}/build/
 	
 	# 下载common仓库
 	sudo rm -rf ${COMMON_PATH} && git clone -b main --depth 1 https://github.com/roacn/common ${COMMON_PATH}
