@@ -523,7 +523,7 @@ function diy_openwrt() {
 	
 	cd ${HOME_PATH}
 
-	echo "reserved for test."
+	echo "Reserved for Future Use."
 	
 	echo
 	echo "--------------common_diy_openwrt end--------------"
@@ -538,7 +538,7 @@ function diy_lienol() {
 	
 	cd ${HOME_PATH}
 
-	echo "reserved for test."
+	echo "Reserved for Future Use."
 	
 	echo
 	echo "--------------common_diy_lienol end--------------"
@@ -553,7 +553,7 @@ function diy_immortalwrt() {
 	
 	cd ${HOME_PATH}
 
-	echo "reserved for test."
+	echo "Reserved for Future Use."
 	
 	echo
 	echo "--------------common_diy_immortalwrt end--------------"
