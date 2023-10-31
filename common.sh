@@ -603,16 +603,16 @@ function modify_config() {
 		__info_msg "官方源码，已经设置为支持https连接"
 	fi
 	
-	# 官方源码：'状态'、'系统'等主菜单，在默认情况下是未选中状态，进行修正
+	# 官方源码：'状态'、'网络'、'系统'等主菜单，在默认情况下是未选中状态，进行修正
 	if [[ "${SOURCE}" =~ (openwrt|Openwrt|OpenWrt|OpenWRT|OPENWRT|official|Official|OFFICIAL) ]]; then
 		sed -i '/CONFIG_PACKAGE_luci-mod-admin-full/d' ${HOME_PATH}/.config
-		sed -i '/CONFIG_PACKAGE_luci-mod-dsl/d' ${HOME_PATH}/.config
+		#sed -i '/CONFIG_PACKAGE_luci-mod-dsl/d' ${HOME_PATH}/.config
 		sed -i '/CONFIG_PACKAGE_luci-mod-network/d' ${HOME_PATH}/.config
 		sed -i '/CONFIG_PACKAGE_luci-mod-status/d' ${HOME_PATH}/.config
 		sed -i '/CONFIG_PACKAGE_luci-mod-system/d' ${HOME_PATH}/.config
 		
 		sed -i '$a CONFIG_PACKAGE_luci-mod-admin-full=y' ${HOME_PATH}/.config
-		sed -i '$a CONFIG_PACKAGE_luci-mod-dsl=y' ${HOME_PATH}/.config
+		#sed -i '$a CONFIG_PACKAGE_luci-mod-dsl=y' ${HOME_PATH}/.config
 		sed -i '$a CONFIG_PACKAGE_luci-mod-network=y' ${HOME_PATH}/.config
 		sed -i '$a CONFIG_PACKAGE_luci-mod-status=y' ${HOME_PATH}/.config
 		sed -i '$a CONFIG_PACKAGE_luci-mod-system=y' ${HOME_PATH}/.config
