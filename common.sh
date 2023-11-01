@@ -81,28 +81,24 @@ function parse_settings() {
 		SOURCE="lede"
 		SOURCE_OWNER="Lean's"
 		LUCI_EDITION="18.06"
-		#PACKAGES_BRANCH="Lede"
 	;;
 	openwrt|Openwrt|OpenWrt|OpenWRT|OPENWRT|official|Official|OFFICIAL)
 		SOURCE_URL="https://github.com/openwrt/openwrt"
 		SOURCE="official"
 		SOURCE_OWNER="openwrt's"
 		LUCI_EDITION="$(echo ${SOURCE_BRANCH} |sed 's/openwrt-//g')"
-		#PACKAGES_BRANCH="Official"
 	;;
 	lienol|Lienol|LIENOL)
 		SOURCE_URL="https://github.com/Lienol/openwrt"
 		SOURCE="lienol"
 		SOURCE_OWNER="Lienol's"
 		LUCI_EDITION="$(echo ${SOURCE_BRANCH})"
-		#PACKAGES_BRANCH="Official"
 	;;
 	immortalwrt|Immortalwrt|IMMORTALWRT|mortal|immortal)
 		SOURCE_URL="https://github.com/immortalwrt/immortalwrt"
 		SOURCE="Immortalwrt"
 		SOURCE_OWNER="Immortalwrt's"
 		LUCI_EDITION="$(echo ${SOURCE_BRANCH} |sed 's/openwrt-//g')"
-		#PACKAGES_BRANCH="Official"
 	;;
 	*)
 		__error_msg "不支持${SOURCE_ABBR}源码"
