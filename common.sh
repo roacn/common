@@ -63,7 +63,7 @@ function parse_settings() {
 		NOTICE_TYPE="false"
 	fi
 	
-	if [[ ${PACKAGES_REPO} =~ (default|DEFAULT|Default) ]]; then
+	if [[ ${PACKAGES_REPO} =~ (default|DEFAULT|Default) ]] || [[ -z ${PACKAGES_REPO} ]]; then
 		PACKAGES_REPO="roacn/openwrt-packages"
 	fi
 	
@@ -1264,6 +1264,7 @@ function compile_info() {
 	echo -e "CPU型号:\033[34m${name}\033[0m"
 	echo
 	echo -e "Github在线编译，常见CPU性能排行:
+	AMD EPYC 7763 64-Core Processor
 	Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz
 	Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz
 	Intel(R) Xeon(R) Platinum 8171M CPU @ 2.60GHz
