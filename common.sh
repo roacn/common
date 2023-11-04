@@ -135,7 +135,7 @@ function parse_settings() {
 	echo COMPILE_DATE_MD="$(date +%m.%d)" >> ${GITHUB_ENV}
 	echo COMPILE_DATE_HM="$(date +%Y%m%d%H%M)" >> ${GITHUB_ENV}
 	echo COMPILE_DATE_HMS="$(date +%Y%m%d%H%M%S)" >> ${GITHUB_ENV}
-	echo COMPILE_DATE_CN="$(date +%Y年%m月%d号%H时%M分)" >> ${GITHUB_ENV}
+	echo COMPILE_DATE_CN="$(date +%Y年%m月%d日%H时%M分)" >> ${GITHUB_ENV}
 	echo COMPILE_DATE_STAMP="$(date -d "$(date +'%Y-%m-%d %H:%M:%S')" +%s)" >> ${GITHUB_ENV}
 	
 	# 路径
@@ -167,6 +167,15 @@ function parse_settings() {
 	echo FILENAME_DEFAULT_RUNONCE="default_settings_runonce" >> ${GITHUB_ENV}
 	echo FILENAME_CONFIG_GEN="config_generate" >> ${GITHUB_ENV}
 	echo FILENAME_TO_DELETE="default_delete" >> ${GITHUB_ENV}
+	
+	local cpu_name=$(cat /proc/cpuinfo | grep name | cut -d: -f2 | uniq | sed 's/^[[:space:]]\+//')
+	echo "::notice title=GithubCPU::${cpu_name}"
+	echo "::notice title=编译时间::$(date +'%Y-%m-%d %H:%M:%S')"
+	echo "::notice title=编译源码::${SOURCE}"
+	echo "::notice title=源码链接::${SOURCE_URL}"
+	echo "::notice title=源码分支::${SOURCE_BRANCH}"
+	echo "::notice title=固件类型::${FIRMWARE_TYPE}"
+	echo "::notice title=LUCI版本::${LUCI_EDITION}"
 }
 
 ################################################################################################################
@@ -878,7 +887,7 @@ function firmware_settings() {
 	elif [[ "${TARGET_PROFILE}" == "xiaomi_mi-router-3-pro" ]]; then
 		TARGET_PROFILE="xiaomi_mir3p"
 	fi
-	__info_msg "机型信息：${TARGET_PROFILE}"
+
 	__info_msg "CPU架构：${ARCHITECTURE}"
 	
 	# 内核版本
@@ -891,8 +900,7 @@ function firmware_settings() {
 	else
 		LINUX_KERNEL=$(egrep -o "${KERNEL_PATCHVER}\.[0-9]+" ${HOME_PATH}/include/kernel-version.mk)
 		[[ -z ${LINUX_KERNEL} ]] && export LINUX_KERNEL="unknown"
-	fi	
-	__info_msg "linux内核版本：${LINUX_KERNEL}"
+	fi
 	
 	# 内核替换
 	if [[ -n "${NEW_KERNEL_PATCHVER}" ]]; then
@@ -907,7 +915,9 @@ function firmware_settings() {
 	else
 		__info_msg "编译固件内核：[ ${KERNEL_PATCHVER} ]"
 	fi
-
+	echo "::notice title=内核版本::${LINUX_KERNEL}"
+	echo "::notice title=固件机型::${TARGET_PROFILE}"
+	
 	# BIOS引导模式
 	if [[ "${BIOS_MODE}" =~ (uefi|UEFI|Uefi) ]]; then
 		sed -i '/CONFIG_GRUB_IMAGES/d' ${HOME_PATH}/.config > /dev/null 2>&1
@@ -1196,10 +1206,15 @@ function compile_info() {
 	
 	echo
 	cd ${HOME_PATH}
-	local plugin_1="$(grep -Eo "CONFIG_PACKAGE_luci-app-.*=y|CONFIG_PACKAGE_luci-theme-.*=y" .config |grep -v 'INCLUDE\|_Proxy\|_static\|_dynamic' |sed 's/=y//' |sed 's/CONFIG_PACKAGE_//g')"
-	local plugin_2="$(echo "${plugin_1}" |sed 's/^/、/g' |sed 's/$/\"/g' |awk '$0=NR$0' |sed 's/^/__blue_color \"       /g')"
-	echo "${plugin_2}" >plugins_info
-	if [ -n "$(ls -A "${HOME_PATH}/plugins_info" 2>/dev/null)" ]; then
+	local plugins="$(grep -Eo "CONFIG_PACKAGE_luci-app-.*=y|CONFIG_PACKAGE_luci-theme-.*=y" ${HOME_PATH}/.config |grep -v 'INCLUDE\|_Proxy\|_static\|_dynamic' |sed 's/=y//' |sed 's/CONFIG_PACKAGE_//g')"
+	
+	echo "${plugins}" > ${HOME_PATH}/plugins_info
+	echo "### 插件列表 :rocket:" >> $GITHUB_STEP_SUMMARY
+	nl ${HOME_PATH}/plugins_info >> $GITHUB_STEP_SUMMARY
+	
+	local pluginsnr="$(nl ${HOME_PATH}/plugins_info |sed 's/$/\"/g' |sed 's/^/__blue_color \"/g')"
+	echo "${pluginsnr}" > ${HOME_PATH}/plugins_info
+	if [ -s ${HOME_PATH}/plugins_info ]; then
 		__red_color "插件列表"
 		echo "--------------------------------------------------------------------------------"
 		chmod -Rf +x ${HOME_PATH}/plugins_info
