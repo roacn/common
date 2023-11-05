@@ -480,10 +480,6 @@ function diy_public() {
 		EOF
 	fi
 	
-	__yellow_color "目录文件..."
-	echo "${HOME_PATH}:"
-	ls -Agho /${MATRIX_TARGET}/openwrt
-	
 	echo
 	echo "--------------common_diy_public end--------------"
 }
