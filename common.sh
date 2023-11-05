@@ -482,7 +482,7 @@ function diy_public() {
 	
 	__yellow_color "目录文件..."
 	echo "${HOME_PATH}:"
-	ls -l /${MATRIX_TARGET}/openwrt
+	ls -Agho /${MATRIX_TARGET}/openwrt
 	
 	echo
 	echo "--------------common_diy_public end--------------"
@@ -1296,9 +1296,9 @@ function update_repo() {
 function organize_firmware() {
 	cd ${FIRMWARE_PATH}
 	echo "files under ${HOME_PATH}:"
-	ls -l /${MATRIX_TARGET}/openwrt
+	ls -Agho /${MATRIX_TARGET}/openwrt
 	echo "files under ${FIRMWARE_PATH}:"
-	ls -l ${FIRMWARE_PATH}
+	ls -Agho ${FIRMWARE_PATH}
 
 	# 清理无关文件
 	__yellow_color "开始清理无关文件..."
