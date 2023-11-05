@@ -26,19 +26,6 @@ ENABLE_CCACHE="true"
 
 
 
-
-
-#### 2、.config配置文件设置
-
-在.config配置文件内增加两行配置如下：
-
-```ini
-CONFIG_DEVEL=y
-CONFIG_CCACHE=y
-```
-
-
-
 <br />
 
 
