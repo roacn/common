@@ -214,7 +214,7 @@ function init_environment() {
 	sudo mkdir -p /${MATRIX_TARGET}
 	sudo chown ${USER}:${GROUPS} /${MATRIX_TARGET}
 	git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-    git config --global user.name "github-actions[bot]"
+	git config --global user.name "github-actions[bot]"
 }
 
 ################################################################################################################
@@ -728,7 +728,11 @@ function modify_config() {
 	fi
 	
 	if [[ `grep -c "CONFIG_PACKAGE_luci-app-dockerman=y" ${HOME_PATH}/.config` -eq '1' ]]; then
+ 		# 修复官方源码dockerman未选中文语言包
 		sed -Ei 's/.*(CONFIG_PACKAGE_luci-i18n-dockerman-zh-cn).*/\1=y/g' ${HOME_PATH}/.config
+  		# 修复官方源码dockerman无法启动(没有关联选中dockerd)
+		sed -Ei 's/.*(CONFIG_PACKAGE_dockerd).*/\1=y/g' ${HOME_PATH}/.config
+  		# 解决Lede源码插件双选冲突(取消luci-app-docker选中状态)
 		if [[ `grep -c "CONFIG_PACKAGE_luci-app-docker=y" ${HOME_PATH}/.config` -eq '1' ]]; then
 			sed -i 's/CONFIG_PACKAGE_luci-app-docker=y/# CONFIG_PACKAGE_luci-app-docker is not set/g' ${HOME_PATH}/.config
 			sed -i 's/CONFIG_PACKAGE_luci-i18n-docker-zh-cn=y/# CONFIG_PACKAGE_luci-i18n-docker-zh-cn is not set/g' ${HOME_PATH}/.config
@@ -823,6 +827,10 @@ function modify_config() {
 	else
 		sed -Ei 's/.*(CONFIG_PACKAGE_luci-app-argon-config).*/# \1 is not set/g' ${HOME_PATH}/.config
 	fi
+	
+	#if [[ `grep -c "CONFIG_PACKAGE_luci-app-zerotier=y" ${HOME_PATH}/.config` -eq '0' ]]; then
+	#	sed -Ei 's/.*(CONFIG_PACKAGE_zerotier).*/# \1 is not set/g' ${HOME_PATH}/.config
+	#fi
 	
 	if [[ `grep -c "CONFIG_PACKAGE_dnsmasq=y" ${HOME_PATH}/.config` -eq '1' ]] || [[ `grep -c "CONFIG_PACKAGE_dnsmasq-dhcpv6=y" ${HOME_PATH}/.config` -eq '1' ]]; then
 		if [[ `grep -c "CONFIG_PACKAGE_dnsmasq-full=y" ${HOME_PATH}/.config` -eq '1' ]]; then
