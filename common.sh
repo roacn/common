@@ -694,7 +694,7 @@ function modify_config() {
 	if [[ `grep -c "CONFIG_TARGET_x86=y" $HOME_PATH/.config` -eq '1' || `grep -c "CONFIG_TARGET_rockchip=y" $HOME_PATH/.config` -eq '1' || `grep -c "CONFIG_TARGET_bcm27xx=y" $HOME_PATH/.config` -eq '1' ]]; then
 		#sed -Ei 's/.*(CONFIG_TARGET_IMAGES_GZIP).*/\1=y/g' $HOME_PATH/.config
 		#sed -Ei 's/.*(CONFIG_PACKAGE_snmpd).*/\1=y/g' $HOME_PATH/.config
-		sed -Ei 's/.*(CONFIG_PACKAGE_openssh-sftp-server).*/\1=y/g' $HOME_PATH/.config
+		#sed -Ei 's/.*(CONFIG_PACKAGE_openssh-sftp-server).*/\1=y/g' $HOME_PATH/.config
 		if [[ `grep -c "CONFIG_TARGET_ROOTFS_PARTSIZE=" $HOME_PATH/.config` -eq '1' ]]; then
 			local partsize="$(grep -Eo "CONFIG_TARGET_ROOTFS_PARTSIZE=[0-9]+" $HOME_PATH/.config |cut -f2 -d=)"
 			if [[ "$partsize" -lt "400" ]];then
@@ -706,7 +706,7 @@ function modify_config() {
 	
 	if [[ `grep -c "CONFIG_TARGET_mxs=y" $HOME_PATH/.config` -eq '1' || `grep -c "CONFIG_TARGET_sunxi=y" $HOME_PATH/.config` -eq '1' || `grep -c "CONFIG_TARGET_zynq=y" $HOME_PATH/.config` -eq '1' ]]; then	
 		#sed -Ei 's/.*(CONFIG_TARGET_IMAGES_GZIP).*/\1=y/g' $HOME_PATH/.config
-		sed -Ei 's/.*(CONFIG_PACKAGE_openssh-sftp-server).*/\1=y/g' $HOME_PATH/.config
+		#sed -Ei 's/.*(CONFIG_PACKAGE_openssh-sftp-server).*/\1=y/g' $HOME_PATH/.config
 		if [[ `grep -c "CONFIG_TARGET_ROOTFS_PARTSIZE=" $HOME_PATH/.config` -eq '1' ]]; then
 			local partsize="$(grep -Eo "CONFIG_TARGET_ROOTFS_PARTSIZE=[0-9]+" $HOME_PATH/.config |cut -f2 -d=)"
 			if [[ "$partsize" -lt "400" ]];then
