@@ -46,7 +46,7 @@ ENABLE_CCACHE="true"
 
 
 
-![ccache](imgs/ccache.png)
+![ccache](../img/ccache.png)
 
 
 
