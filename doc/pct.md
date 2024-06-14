@@ -362,11 +362,11 @@ target container '106' updated with 'mp2'
 - [ ] 5、修改目标挂载点为正确的挂载点
 - [ ] 6、点击“Reassign Volume”确认！
 
-![转移挂载1](/img/转移挂载1.jpg)
+![转移挂载1](../img/转移挂载1.jpg)
 
-![转移挂载2](/img/转移挂载2.jpg)
+![转移挂载2](../img/转移挂载2.jpg)
 
-![转移挂载3](/img/转移挂载3.jpg)
+![转移挂载3](../img/转移挂载3.jpg)
 
 
 
