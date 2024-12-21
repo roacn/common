@@ -75,7 +75,7 @@ function parse_settings() {
 		SOURCE_URL="https://github.com/coolsnowwolf/lede"
 		SOURCE="lede"
 		SOURCE_OWNER="Lean's"
-		SOURCE_BRANCH=$LUCI_EDITION
+		SOURCE_BRANCH="master"
 	;;
 	openwrt|Openwrt|OpenWrt|OpenWRT|OPENWRT|official|Official|OFFICIAL)
 		SOURCE_URL="https://github.com/openwrt/openwrt"
