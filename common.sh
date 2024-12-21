@@ -286,7 +286,7 @@ function do_diy() {
 
         # 修改golang版本
         rm -rf feeds/packages/lang/golang
-        git clone https://github.com/sbwml/packages_lang_golang -b 22.x feeds/packages/lang/golang
+        git clone https://github.com/sbwml/packages_lang_golang feeds/packages/lang/golang
 	
 	# 修改.config文件
 	modify_config
