@@ -39,8 +39,8 @@ function __white_color() {
 ################################################################################################################
 function parse_settings() {
 	source build/$MATRIX_TARGET/settings.ini
-	if [[ -n "$INPUTS_SOURCE_BRANCH" ]]; then
-		[[ $INPUTS_SOURCE_BRANCH =~ (default|DEFAULT|Default) ]] && SOURCE_BRANCH="$SOURCE_BRANCH" || SOURCE_BRANCH="$INPUTS_SOURCE_BRANCH"
+	if [[ -n "$INPUTS_LUCI_EDITION" ]]; then
+		[[ $INPUTS_LUCI_EDITION =~ (default|DEFAULT|Default) ]] && LUCI_EDITION="$LUCI_EDITION" || LUCI_EDITION="$INPUTS_LUCI_EDITION"
 		[[ $INPUTS_CONFIG_FILE =~ (default|DEFAULT|Default) ]] && CONFIG_FILE="$CONFIG_FILE" || CONFIG_FILE="$INPUTS_CONFIG_FILE"
 		[[ $INPUTS_BIOS_MODE =~ (default|DEFAULT|Default) ]] && BIOS_MODE="$BIOS_MODE" || BIOS_MODE="$INPUTS_BIOS_MODE"
 		[[ $INPUTS_ENABLE_CCACHE =~ (default|DEFAULT|Default) ]] && ENABLE_CCACHE="$ENABLE_CCACHE" || ENABLE_CCACHE="$INPUTS_ENABLE_CCACHE"
@@ -75,25 +75,34 @@ function parse_settings() {
 		SOURCE_URL="https://github.com/coolsnowwolf/lede"
 		SOURCE="lede"
 		SOURCE_OWNER="Lean's"
-		LUCI_EDITION="18.06"
+		SOURCE_BRANCH=$LUCI_EDITION
 	;;
 	openwrt|Openwrt|OpenWrt|OpenWRT|OPENWRT|official|Official|OFFICIAL)
 		SOURCE_URL="https://github.com/openwrt/openwrt"
 		SOURCE="official"
 		SOURCE_OWNER="openwrt's"
-		LUCI_EDITION="$(echo $SOURCE_BRANCH |sed 's/openwrt-//g')"
+		if [[ $LUCI_EDITION =~ (main|master) ]]; then
+			SOURCE_BRANCH=$LUCI_EDITION
+		else
+			SOURCE_BRANCH="openwrt-$LUCI_EDITION"
+		fi
 	;;
 	lienol|Lienol|LIENOL)
 		SOURCE_URL="https://github.com/Lienol/openwrt"
 		SOURCE="lienol"
 		SOURCE_OWNER="Lienol's"
-		LUCI_EDITION="$(echo $SOURCE_BRANCH)"
+		SOURCE_BRANCH=$LUCI_EDITION
 	;;
 	immortalwrt|Immortalwrt|IMMORTALWRT|mortal|immortal)
 		SOURCE_URL="https://github.com/immortalwrt/immortalwrt"
 		SOURCE="Immortalwrt"
 		SOURCE_OWNER="Immortalwrt's"
 		LUCI_EDITION="$(echo $SOURCE_BRANCH |sed 's/openwrt-//g')"
+		if [[ $LUCI_EDITION =~ (main|master) ]]; then
+			SOURCE_BRANCH=$LUCI_EDITION
+		else
+			SOURCE_BRANCH="openwrt-$LUCI_EDITION"
+		fi
 	;;
 	*)
 		__error_msg "不支持$SOURCE_ABBR源码"
@@ -102,7 +111,7 @@ function parse_settings() {
 	esac
 	
 	# 基础设置
-	echo "SOURCE_BRANCH=$SOURCE_BRANCH" >> $GITHUB_ENV
+	echo "LUCI_EDITION=$LUCI_EDITION" >> $GITHUB_ENV
 	echo "CONFIG_FILE=$CONFIG_FILE" >> $GITHUB_ENV
 	echo "FIRMWARE_TYPE=$FIRMWARE_TYPE" >> $GITHUB_ENV
 	echo "BIOS_MODE=$BIOS_MODE" >> $GITHUB_ENV
@@ -119,8 +128,8 @@ function parse_settings() {
 	echo "REPOSITORY=${GITHUB_REPOSITORY##*/}" >> $GITHUB_ENV
 	echo "SOURCE=$SOURCE" >> $GITHUB_ENV
 	echo "SOURCE_URL=$SOURCE_URL" >> $GITHUB_ENV
+	echo "SOURCE_BRANCH=$SOURCE_BRANCH" >> $GITHUB_ENV
 	echo "SOURCE_OWNER=$SOURCE_OWNER" >> $GITHUB_ENV
-	echo "LUCI_EDITION=$LUCI_EDITION" >> $GITHUB_ENV
 	echo "ENABLE_PACKAGES_UPDATE=$ENABLE_PACKAGES_UPDATE" >> $GITHUB_ENV
 	echo "ENABLE_REPO_UPDATE=false" >> $GITHUB_ENV
 	echo "GITHUB_API=zzz_api" >> $GITHUB_ENV
@@ -309,20 +318,35 @@ function update_feeds() {
 	local packages_url="https://github.com/$PACKAGES_REPO.git"
 	local packages_branch="$PACKAGES_BRANCH"
 	local packages="pkg$GITHUB_ACTOR"
+	local feeds_file="feeds.conf.default"
 	__info_msg "源码：$SOURCE 插件源仓库：$packages_url 插件源分支：$packages_branch 插件源文件夹：$packages"
 	
-	sed -i "/${packages}/d; /#/d; /^$/d; /ssrplus/d; /helloworld/d; /passwall/d; /OpenClash/d" "feeds.conf.default"
+	sed -i "/${packages}/d; /#/d; /^$/d; /ssrplus/d; /helloworld/d; /passwall/d; /OpenClash/d" $feeds_file
+	
+	# 对Lede源码中Luci版本处理
+	if [[ $SOURCE =~ (lede|Lede|LEDE) ]]; then
+		if [ "$LUCI_EDITION" == "18.06" ]; then
+			sed -Ei 's/^#(src-git luci https:\/\/github.com\/coolsnowwolf\/luci)/\1/' $feeds_file
+			sed -Ei 's/^(src-git luci https:\/\/github\.com\/coolsnowwolf\/luci\.git;openwrt-23\.05)/#\1/' $feeds_file
+		elif [ "$LUCI_EDITION" == "23.05" ]; then
+			sed -Ei 's/^(src-git luci https:\/\/github.com\/coolsnowwolf\/luci)/#\1/' $feeds_file
+			sed -Ei 's/^#(src-git luci https:\/\/github\.com\/coolsnowwolf\/luci\.git;openwrt-23\.05)/\1/' $feeds_file
+		else
+			echo "Invalid value for luci version: $LUCI_EDITION"
+			exit 1
+		fi
+	fi
 	
 	# 当插件源添加至 feeds.conf.default 首行时，优先安装自己添加的插件源
-	#sed -i "1i src-git $packages $packages_url;$packages_branch" "feeds.conf.default"
+	#sed -i "1i src-git $packages $packages_url;$packages_branch" $feeds_file
 	
 	# 当插件源添加至 feeds.conf.default 结尾时，重复插件，先删除相应文件，操作完毕后，再一次运行./scripts/feeds update -a，即可更新对应的.index与target.index文件
 	if [[ -z "$packages_branch" ]]; then
-		cat >> "feeds.conf.default" <<-EOF
+		cat >> $feeds_file <<-EOF
 		src-git $packages $packages_url
 		EOF
 	else
-		cat >> "feeds.conf.default" <<-EOF
+		cat >> $feeds_file <<-EOF
 		src-git $packages $packages_url;$packages_branch
 		EOF
 	fi
@@ -1253,7 +1277,7 @@ function update_repo() {
 	cd $repo_path
 
 	# 更新settings.ini文件
-	local settings_array=(SOURCE_BRANCH CONFIG_FILE FIRMWARE_TYPE BIOS_MODE UPLOAD_CONFIG UPLOAD_FIRMWARE UPLOAD_RELEASE ENABLE_CCACHE)
+	local settings_array=(LUCI_EDITION CONFIG_FILE FIRMWARE_TYPE BIOS_MODE UPLOAD_CONFIG UPLOAD_FIRMWARE UPLOAD_RELEASE ENABLE_CCACHE)
 	for x in $settings_array[*]; do
 		local settings_key="$(grep -E "$x=" $SETTINGS_INI |sed 's/^[ ]*//g' |grep -v '^#' | awk '{print $1}' | awk -F'=' '{print $1}')"
 		local settings_val="$(grep -E "$x=" $SETTINGS_INI |sed 's/^[ ]*//g' |grep -v '^#' | awk '{print $1}' | awk -F'=' '{print $2}' | sed 's#"##g')"
