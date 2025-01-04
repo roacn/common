@@ -290,7 +290,7 @@ function do_diy() {
 	# 执行diy_part.sh脚本
 	/bin/bash "$MATRIX_TARGET_PATH/$DIY_PART_SH"
 	
-	# 再次更新插件源，并安装插件源
+	# 再次更新插件源, 并安装插件源
 	./scripts/feeds update -a > /dev/null 2>&1 && ./scripts/feeds install -a > /dev/null 2>&1
 
         # 修改golang版本
@@ -300,7 +300,7 @@ function do_diy() {
 	# 修改.config文件
 	modify_config
 	
-	# 编译机型CPU架构、内核版本等信息，替换内核等
+	# 编译机型CPU架构、内核版本等信息, 替换内核等
 	firmware_settings
 }
 
@@ -337,10 +337,10 @@ function update_feeds() {
 		fi
 	fi
 	
-	# 当插件源添加至 feeds.conf.default 首行时，优先安装自己添加的插件源
+	# 当插件源添加至 feeds.conf.default 首行时, 优先安装自己添加的插件源
 	#sed -i "1i src-git $packages $packages_url;$packages_branch" $feeds_file
 	
-	# 当插件源添加至 feeds.conf.default 结尾时，重复插件，先删除相应文件，操作完毕后，再一次运行./scripts/feeds update -a，即可更新对应的.index与target.index文件
+	# 当插件源添加至 feeds.conf.default 结尾时, 重复插件, 先删除相应文件, 操作完毕后, 再一次运行./scripts/feeds update -a, 即可更新对应的.index与target.index文件
 	if [[ -z "$packages_branch" ]]; then
 		cat >> $feeds_file <<-EOF
 		src-git $packages $packages_url
@@ -368,7 +368,7 @@ function update_feeds() {
 		find $FEEDS_PATH -maxdepth 3 -type d -name "$X" | grep -v "$packages" | xargs sudo rm -rf {}
 	done
 	
-	# 设置中文语言包(官方：zh_Hans，Lede：zh-cn；对缺失相应文件的插件进行补充)
+	# 设置中文语言包(官方：zh_Hans, Lede：zh-cn；对缺失相应文件的插件进行补充)
 	__yellow_color "开始设置中文语言包..."	
 	for e in $(ls -d $FEEDS_PATH/$packages/luci-*/po); do
 		if [[ -d $e/zh-cn && ! -d $e/zh_Hans ]]; then
@@ -383,7 +383,7 @@ function update_feeds() {
 }
 
 ################################################################################################################
-# 各源码库的公共脚本(文件检测、添加插件源、diy、files、patch等，以及Openwrt编译完成后的首次运行设置)
+# 各源码库的公共脚本(文件检测、添加插件源、diy、files、patch等, 以及Openwrt编译完成后的首次运行设置)
 ################################################################################################################
 function diy_public() {
 	echo "--------------common_diy_public start--------------"
@@ -442,7 +442,7 @@ function diy_public() {
 		if [[ -n "$(grep "luci-app-autoupdate" $HOME_PATH/include/target.mk)" ]]; then
 			sed -i 's/luci-app-autoupdate//g' $HOME_PATH/include/target.mk
 		fi
-		__info_msg "lxc固件，删除自动更新插件"
+		__info_msg "lxc固件, 删除自动更新插件"
 	else
 		find $HOME_PATH/feeds -type d -name "luci-app-autoupdate" | xargs -i sudo rm -rf {}
 		find $HOME_PATH/package -type d -name "luci-app-autoupdate" | xargs -i sudo rm -rf {}
@@ -483,7 +483,7 @@ function diy_public() {
 	
 	__yellow_color "开始执行其它设置..."
 	# Openwrt初次运行初始化设置	
-	# default_uci文件，UCI基础设置
+	# default_uci文件, UCI基础设置
 	echo "#!/bin/sh" > $FILES_PATH/etc/$FILENAME_DEFAULT_UCI && sudo chmod +x $FILES_PATH/etc/$FILENAME_DEFAULT_UCI
 	
 	cp -rf $COMMON_PATH/custom/$FILENAME_DEFAULT_RUNONCE $FILES_PATH/etc/init.d/$FILENAME_DEFAULT_RUNONCE && sudo chmod +x $FILES_PATH/etc/init.d/$FILENAME_DEFAULT_RUNONCE
@@ -497,10 +497,10 @@ function diy_public() {
 	exit 0
 	EOF
 	
-	# default_delete文件，Openwrt固件升级时需要删除的文件
+	# default_delete文件, Openwrt固件升级时需要删除的文件
 	echo "#!/bin/sh" > $FILES_PATH/etc/$FILENAME_TO_DELETE && sudo chmod +x "$FILES_PATH/etc/$FILENAME_TO_DELETE"
 	
-	# base-files-essential文件，Openwrt固件升级时需要保留的文件
+	# base-files-essential文件, Openwrt固件升级时需要保留的文件
 	if [[ -z "$(grep "background" $FILES_TO_KEEP)" ]]; then
 		cat >> "$FILES_TO_KEEP" <<-EOF
 		/www/luci-static/argon/background/
@@ -513,7 +513,7 @@ function diy_public() {
 }
 
 ################################################################################################################
-# LEDE源码库的私有脚本(LEDE源码对应的修改，请在此处)
+# LEDE源码库的私有脚本(LEDE源码对应的修改, 请在此处)
 ################################################################################################################
 function diy_lede() {
 	echo "--------------common_diy_lede start--------------"
@@ -529,7 +529,7 @@ function diy_lede() {
 		sed -i '/CYXluq4wUazHjmCDBCqXF/d' $ZZZ_PATH
 	fi
 
-	# 修复后台管理页面无法打开，降级openssl到1.1.1版本
+	# 修复后台管理页面无法打开, 降级openssl到1.1.1版本
 	#if [[ "$FIRMWARE_TYPE" == "lxc" ]]; then
 	#	__info_msg "修复lxc固件openssl"
 	#	sudo rm -rf "$HOME_PATH/include/openssl-module.mk"
@@ -543,7 +543,7 @@ function diy_lede() {
 }
 
 ################################################################################################################
-# 官方源码库的私有脚本(官方源码对应的修改，请在此处)
+# 官方源码库的私有脚本(官方源码对应的修改, 请在此处)
 ################################################################################################################
 function diy_openwrt() {
 	echo "--------------common_diy_openwrt start--------------"
@@ -558,7 +558,7 @@ function diy_openwrt() {
 }
 
 ################################################################################################################
-# LIENOL源码库的私有脚本(LIENOL源码对应的修改，请在此处)
+# LIENOL源码库的私有脚本(LIENOL源码对应的修改, 请在此处)
 ################################################################################################################
 function diy_lienol() {
 	echo "--------------common_diy_lienol start--------------"
@@ -573,7 +573,7 @@ function diy_lienol() {
 }
 
 ################################################################################################################
-# IMMORTALWRT源码库的私有脚本(IMMORTALWRT源码对应的修改，请在此处)
+# IMMORTALWRT源码库的私有脚本(IMMORTALWRT源码对应的修改, 请在此处)
 ################################################################################################################
 function diy_immortalwrt() {
 	echo "--------------common_diy_immortalwrt start--------------"
@@ -600,17 +600,17 @@ function modify_config() {
 	
 	# 复制自定义.config文件
 	cp -rf $CONFIG_PATH/$CONFIG_FILE $HOME_PATH/.config
-	make defconfig > /dev/null 2>&1
+	make defconfig > /dev/null
 	
 	# 缓存加速
 	if [[ $ENABLE_CCACHE =~ (fast|Fast|FAST|true|True|TRUE|normal|Normal|NORMAL) ]]; then
-		__info_msg "开启缓存加速，如编译出错，请尝试删除缓存，或切换为普通加速，或关闭缓存加速"
+		__info_msg "开启缓存加速, 如编译出错, 请尝试删除缓存, 或切换为普通加速, 或关闭缓存加速"
 		sed -i '/CONFIG_DEVEL/d' $HOME_PATH/.config > /dev/null 2>&1
 		sed -i '/CONFIG_CCACHE/d' $HOME_PATH/.config > /dev/null 2>&1
 		sed -i '$a CONFIG_DEVEL=y' $HOME_PATH/.config > /dev/null 2>&1
 		sed -i '$a CONFIG_CCACHE=y' $HOME_PATH/.config > /dev/null 2>&1
 	else
-		__info_msg "关闭缓存加速，如希望加速编译，请在settings.ini中开启缓存加速"
+		__info_msg "关闭缓存加速, 如希望加速编译, 请在settings.ini中开启缓存加速"
 		sed -i '/CONFIG_DEVEL/d' $HOME_PATH/.config > /dev/null 2>&1
 		sed -i '/CONFIG_CCACHE/d' $HOME_PATH/.config > /dev/null 2>&1
 	fi
@@ -618,31 +618,31 @@ function modify_config() {
 	# lxc模式下编译.tar.gz固件
 	if [[ "$FIRMWARE_TYPE" == "lxc" ]]; then
 		sed -Ei 's/.*(CONFIG_TARGET_ROOTFS_TARGZ).*/\1=y/g' $HOME_PATH/.config
-		__info_msg "lxc固件，添加对openwrt-generic-rootfs.tar.gz文件编译"
+		__info_msg "lxc固件, 添加对openwrt-generic-rootfs.tar.gz文件编译"
 	fi
 	
-	# https连接，检测修正，主要针对官方源码
+	# https连接, 检测修正, 主要针对官方源码
 	# CONFIG_PACKAGE_ca-bundle=y 默认已经选择
-	# liubustream-mbedtls、liubustream-openssl、libustream-wolfssl，三者在后面设置
+	# liubustream-mbedtls、liubustream-openssl、libustream-wolfssl, 三者在后面设置
 	if [[ $SOURCE =~ (openwrt|Openwrt|OpenWrt|OpenWRT|OPENWRT|official|Official|OFFICIAL) ]]; then
 		sed -Ei 's/.*(CONFIG_PACKAGE_ca-certificates).*/\1=y/g' $HOME_PATH/.config
 		sed -Ei 's/.*(CONFIG_PACKAGE_libustream-openssl).*/\1=y/g' $HOME_PATH/.config
 		sed -Ei 's/.*(CONFIG_PACKAGE_libustream-mbedtls).*/# \1 is not set/g' $HOME_PATH/.config
 		sed -Ei 's/.*(CONFIG_PACKAGE_libustream-wolfssl).*/# \1 is not set/g' $HOME_PATH/.config
-		__info_msg "官方源码，已经设置为支持https连接"
+		__info_msg "官方源码, 已经设置为支持https连接"
 	fi
 	
-	# 官方源码：'状态'、'网络'、'系统'等主菜单，在默认情况下是未选中状态，进行修正
+	# 官方源码：'状态'、'网络'、'系统'等主菜单, 在默认情况下是未选中状态, 进行修正
 	if [[ $SOURCE =~ (openwrt|Openwrt|OpenWrt|OpenWRT|OPENWRT|official|Official|OFFICIAL) ]]; then
 		sed -Ei 's/.*(CONFIG_PACKAGE_luci-mod-admin-full).*/\1=y/g' $HOME_PATH/.config
 		#sed -Ei 's/.*(CONFIG_PACKAGE_luci-mod-dsl).*/\1=y/g' $HOME_PATH/.config
 		sed -Ei 's/.*(CONFIG_PACKAGE_luci-mod-network).*/\1=y/g' $HOME_PATH/.config
 		sed -Ei 's/.*(CONFIG_PACKAGE_luci-mod-status).*/\1=y/g' $HOME_PATH/.config
 		sed -Ei 's/.*(CONFIG_PACKAGE_luci-mod-system).*/\1=y/g' $HOME_PATH/.config
-		__info_msg "官方源码，'状态'、'系统'等主菜单检测设置"
+		__info_msg "官方源码, '状态'、'系统'等主菜单检测设置"
 	fi
 	
-	# Lede源码：修复lxc固件openssl无法打开后台管理界面，以wolfssl替代openssl(仅lede源码需要修改，官方不需要)
+	# Lede源码：修复lxc固件openssl无法打开后台管理界面, 以wolfssl替代openssl(仅lede源码需要修改, 官方不需要)
 	if [[ $FIRMWARE_TYPE == "lxc" &&  $SOURCE =~ (lede|Lede|LEDE) ]]; then
 		# 依赖关系
 		# LuCI -> Collections ->  [ ] luci-ssl(依赖libustream-mbedtls)
@@ -651,12 +651,12 @@ function modify_config() {
 		# Utilities           ->  [ ] cache-domains-openssl(依赖libustream-openssl)
 		# Utilities           ->      cache-domains-wolfssl(依赖libustream-wolfssl)
 		# 库
-		# Libraries           ->  [ ] libustream-mbedtls(库文件，三选一，依赖libmbedtls)
-		# Libraries           ->  [ ] libustream-openssl(库文件，三选一，依赖libopenssl)
-		# Libraries           ->  [*] libustream-wolfssl(库文件，三选一，依赖libwolfssl)
-		# Libraries  ->  SSL  ->  [*] libmbedtls(库文件，自动勾选，无需关注)
-		# Libraries  ->  SSL  ->  [*] libopenssl(库文件，自动勾选，无需关注)
-		# Libraries  ->  SSL  ->  [*] libwolfssl(库文件，自动勾选，无需关注)
+		# Libraries           ->  [ ] libustream-mbedtls(库文件, 三选一, 依赖libmbedtls)
+		# Libraries           ->  [ ] libustream-openssl(库文件, 三选一, 依赖libopenssl)
+		# Libraries           ->  [*] libustream-wolfssl(库文件, 三选一, 依赖libwolfssl)
+		# Libraries  ->  SSL  ->  [*] libmbedtls(库文件, 自动勾选, 无需关注)
+		# Libraries  ->  SSL  ->  [*] libopenssl(库文件, 自动勾选, 无需关注)
+		# Libraries  ->  SSL  ->  [*] libwolfssl(库文件, 自动勾选, 无需关注)
 		# 插件
 		# LuCI->Applications  ->  [ ] luci-app-cshark(依赖Network->cshark,cshark依赖libustream-mbedtls)
 		
@@ -674,38 +674,38 @@ function modify_config() {
 			sed -Ei 's/.*(CONFIG_PACKAGE_cache-domains-wolfssl).*/\1=y/g' $HOME_PATH/.config
 			sed -Ei 's/.*(CONFIG_PACKAGE_cache-domains-mbedtls).*/# \1 is not set/g' $HOME_PATH/.config
 			sed -Ei 's/.*(CONFIG_PACKAGE_cache-domains-openssl).*/# \1 is not set/g' $HOME_PATH/.config
-			echo "__error_msg \"lxc固件下，您选择cache-domains-mbedtls或cache-domains-openssl，与cache-domains-wolfssl库有冲突，替换为cache-domains-wolfssl\"" >> $CONFFLICTIONS
+			echo "__error_msg \"lxc固件下, 您选择cache-domains-mbedtls或cache-domains-openssl, 与cache-domains-wolfssl库有冲突, 替换为cache-domains-wolfssl\"" >> $CONFFLICTIONS
 			echo "" >> $CONFFLICTIONS
 		fi
 	else
 		# 非lede源码lxc模式的其它固件：openwrt的所有固件、lede普通固件		
-		# 非强制使用openssl，由.config决定，只解决冲突
+		# 非强制使用openssl, 由.config决定, 只解决冲突
 		if [[ `grep -c "CONFIG_PACKAGE_libustream-openssl=y" $HOME_PATH/.config` -ge '1' ]]; then
 			if [[ `grep -c "CONFIG_PACKAGE_libustream-mbedtls=y" $HOME_PATH/.config` -ge '1' ]]; then
 				sed -Ei 's/.*(CONFIG_PACKAGE_libustream-mbedtls).*/# \1 is not set/g' $HOME_PATH/.config
-				echo "__error_msg \"您同时选择libustream-mbedtls和libustream-openssl，库有冲突，只能二选一，已删除libustream-mbedtls库\"" >> $CONFFLICTIONS
+				echo "__error_msg \"您同时选择libustream-mbedtls和libustream-openssl, 库有冲突, 只能二选一, 已删除libustream-mbedtls库\"" >> $CONFFLICTIONS
 				echo "" >> $CONFFLICTIONS
 			fi
 			# libustream-wolfssl可能处于=y或=m状态
 			if [[ `grep -c "CONFIG_PACKAGE_libustream-wolfssl=y" $HOME_PATH/.config` -ge '1' || `grep -c "CONFIG_PACKAGE_libustream-wolfssl=m" $HOME_PATH/.config` -ge '1' ]]; then
 				sed -Ei 's/.*(CONFIG_PACKAGE_libustream-wolfssl).*/# \1 is not set/g' $HOME_PATH/.config
-				echo "__error_msg \"您同时选择libustream-wolfssl和libustream-openssl，库有冲突，只能二选一，已删除libustream-wolfssl库\"" >> $CONFFLICTIONS
+				echo "__error_msg \"您同时选择libustream-wolfssl和libustream-openssl, 库有冲突, 只能二选一, 已删除libustream-wolfssl库\"" >> $CONFFLICTIONS
 				echo "" >> $CONFFLICTIONS
 			fi
-			# luci-ssl(依赖于旧的libustream-mbedtls)，替换为luci-ssl-openssl(依赖于libustream-openssl)
+			# luci-ssl(依赖于旧的libustream-mbedtls), 替换为luci-ssl-openssl(依赖于libustream-openssl)
 			if [[ `grep -c "CONFIG_PACKAGE_luci-ssl=y" $HOME_PATH/.config` -ge '1' ]]; then
 				sed -i 's/CONFIG_PACKAGE_luci-ssl=y/# CONFIG_PACKAGE_luci-ssl is not set/g' $HOME_PATH/.config
 				sed -Ei 's/.*(CONFIG_PACKAGE_luci-ssl-openssl).*/\1=y/g' $HOME_PATH/.config
-				echo "__error_msg \"您选择luci-ssl(依赖于旧的libustream-mbedtls)，与libustream-openssl库有冲突，替换为luci-ssl-openssl(依赖于libustream-openssl)\"" >> $CONFFLICTIONS
+				echo "__error_msg \"您选择luci-ssl(依赖于旧的libustream-mbedtls), 与libustream-openssl库有冲突, 替换为luci-ssl-openssl(依赖于libustream-openssl)\"" >> $CONFFLICTIONS
 				echo "" >> $CONFFLICTIONS
 			fi
-			# cache-domains-mbedtls(依赖于旧的libustream-mbedtls)，cache-domains-wolfssl（依赖于libustream-wolfssl）
+			# cache-domains-mbedtls(依赖于旧的libustream-mbedtls), cache-domains-wolfssl（依赖于libustream-wolfssl）
 			# 替换为cache-domains-openssl（依赖于libustream-openssl）
 			if [[ `grep -c "CONFIG_PACKAGE_cache-domains-mbedtls=y" $HOME_PATH/.config` -ge '1' || `grep -c "CONFIG_PACKAGE_cache-domains-wolfssl=y" $HOME_PATH/.config` -ge '1' ]]; then
 				sed -i '/CONFIG_PACKAGE_cache-domains-mbedtls/d' $HOME_PATH/.config
 				sed -i '/CONFIG_PACKAGE_cache-domains-wolfssl/d' $HOME_PATH/.config
 				sed -Ei 's/.*(CONFIG_PACKAGE_cache-domains-openssl).*/\1=y/g' $HOME_PATH/.config
-				echo "__error_msg \"您选择cache-domains-mbedtls或cache-domains-wolfssl，与cache-domains-openssl库有冲突，替换为cache-domains-openssl\"" >> $CONFFLICTIONS
+				echo "__error_msg \"您选择cache-domains-mbedtls或cache-domains-wolfssl, 与cache-domains-openssl库有冲突, 替换为cache-domains-openssl\"" >> $CONFFLICTIONS
 				echo "" >> $CONFFLICTIONS
 			fi
 		fi
@@ -746,7 +746,7 @@ function modify_config() {
 			sed -i 's/CONFIG_PACKAGE_luci-app-adblock=y/# CONFIG_PACKAGE_luci-app-adblock is not set/g' $HOME_PATH/.config
 			sed -i 's/CONFIG_PACKAGE_adblock=y/# CONFIG_PACKAGE_adblock is not set/g' $HOME_PATH/.config
 			sed -i '/luci-i18n-adblock/d' $HOME_PATH/.config
-			echo "__error_msg \"您同时选择luci-app-adblock-plus和luci-app-adblock，插件有依赖冲突，只能二选一，已删除luci-app-adblock\"" >> $CONFFLICTIONS
+			echo "__error_msg \"您同时选择luci-app-adblock-plus和luci-app-adblock, 插件有依赖冲突, 只能二选一, 已删除luci-app-adblock\"" >> $CONFFLICTIONS
 			echo "" >> $CONFFLICTIONS
 		fi
 	fi
@@ -760,7 +760,7 @@ function modify_config() {
 		if [[ `grep -c "CONFIG_PACKAGE_luci-app-docker=y" $HOME_PATH/.config` -eq '1' ]]; then
 			sed -i 's/CONFIG_PACKAGE_luci-app-docker=y/# CONFIG_PACKAGE_luci-app-docker is not set/g' $HOME_PATH/.config
 			sed -i 's/CONFIG_PACKAGE_luci-i18n-docker-zh-cn=y/# CONFIG_PACKAGE_luci-i18n-docker-zh-cn is not set/g' $HOME_PATH/.config
-			echo "__error_msg \"您同时选择luci-app-docker和luci-app-dockerman，插件有冲突，相同功能插件只能二选一，已删除luci-app-docker\"" >> $CONFFLICTIONS
+			echo "__error_msg \"您同时选择luci-app-docker和luci-app-dockerman, 插件有冲突, 相同功能插件只能二选一, 已删除luci-app-docker\"" >> $CONFFLICTIONS
 			echo "" >> $CONFFLICTIONS
 		fi
 	fi
@@ -777,7 +777,7 @@ function modify_config() {
 	if [[ `grep -c "CONFIG_PACKAGE_luci-app-ipsec-server=y" $HOME_PATH/.config` -eq '1' ]]; then
 		if [[ `grep -c "CONFIG_PACKAGE_luci-app-ipsec-vpnd=y" $HOME_PATH/.config` -eq '1' ]]; then
 			sed -i 's/CONFIG_PACKAGE_luci-app-ipsec-vpnd=y/# CONFIG_PACKAGE_luci-app-ipsec-vpnd is not set/g' $HOME_PATH/.config
-			echo "__error_msg \"您同时选择luci-app-ipsec-vpnd和luci-app-ipsec-server，插件有冲突，相同功能插件只能二选一，已删除luci-app-ipsec-vpnd\""  >> $CONFFLICTIONS
+			echo "__error_msg \"您同时选择luci-app-ipsec-vpnd和luci-app-ipsec-server, 插件有冲突, 相同功能插件只能二选一, 已删除luci-app-ipsec-vpnd\""  >> $CONFFLICTIONS
 			echo "" >> $CONFFLICTIONS
 		fi
 	fi
@@ -787,7 +787,7 @@ function modify_config() {
 			sed -i 's/CONFIG_PACKAGE_luci-app-qbittorrent-simple=y/# CONFIG_PACKAGE_luci-app-qbittorrent-simple is not set/g' $HOME_PATH/.config
 			sed -i 's/CONFIG_PACKAGE_luci-i18n-qbittorrent-simple-zh-cn=y/# CONFIG_PACKAGE_luci-i18n-qbittorrent-simple-zh-cn is not set/g' $HOME_PATH/.config
 			sed -i 's/CONFIG_PACKAGE_qbittorrent=y/# CONFIG_PACKAGE_qbittorrent is not set/g' $HOME_PATH/.config
-			echo "__error_msg \"您同时选择luci-app-qbittorrent和luci-app-qbittorrent-simple，插件有冲突，相同功能插件只能二选一，已删除luci-app-qbittorrent-simple\"" >> $CONFFLICTIONS
+			echo "__error_msg \"您同时选择luci-app-qbittorrent和luci-app-qbittorrent-simple, 插件有冲突, 相同功能插件只能二选一, 已删除luci-app-qbittorrent-simple\"" >> $CONFFLICTIONS
 			echo "" >> $CONFFLICTIONS
 		fi
 	fi
@@ -797,7 +797,7 @@ function modify_config() {
 			sed -i 's/CONFIG_PACKAGE_luci-app-samba=y/# CONFIG_PACKAGE_luci-app-samba is not set/g' $HOME_PATH/.config
 			sed -i 's/CONFIG_PACKAGE_luci-i18n-samba-zh-cn=y/# CONFIG_PACKAGE_luci-i18n-samba-zh-cn is not set/g' $HOME_PATH/.config
 			sed -i 's/CONFIG_PACKAGE_samba36-server=y/# CONFIG_PACKAGE_samba36-server is not set/g' $HOME_PATH/.config
-			echo "__error_msg \"您同时选择luci-app-samba和luci-app-samba4，插件有冲突，相同功能插件只能二选一，已删除luci-app-samba\"" >> $CONFFLICTIONS
+			echo "__error_msg \"您同时选择luci-app-samba和luci-app-samba4, 插件有冲突, 相同功能插件只能二选一, 已删除luci-app-samba\"" >> $CONFFLICTIONS
 			echo "" >> $CONFFLICTIONS
 		fi
 	fi
@@ -807,7 +807,7 @@ function modify_config() {
 			sed -i 's/CONFIG_PACKAGE_luci-app-cshark=y/# CONFIG_PACKAGE_luci-app-cshark is not set/g' $HOME_PATH/.config
 			sed -i 's/CONFIG_PACKAGE_cshark=y/# CONFIG_PACKAGE_cshark is not set/g' $HOME_PATH/.config
 			sed -i 's/CONFIG_PACKAGE_libustream-mbedtls=y/# CONFIG_PACKAGE_libustream-mbedtls is not set/g' $HOME_PATH/.config
-			echo "__error_msg \"您同时选择luci-app-ssr-plus和luci-app-cshark，插件有依赖冲突，只能二选一，已删除luci-app-cshark\"" >> $CONFFLICTIONS
+			echo "__error_msg \"您同时选择luci-app-ssr-plus和luci-app-cshark, 插件有依赖冲突, 只能二选一, 已删除luci-app-cshark\"" >> $CONFFLICTIONS
 			echo "" >> $CONFFLICTIONS
 		fi
 	fi
@@ -816,7 +816,7 @@ function modify_config() {
 		if [[ `grep -c "CONFIG_PACKAGE_luci-app-turboacc_INCLUDE_SHORTCUT_FE_CM=y" $HOME_PATH/.config` -eq '1' ]]; then
 			sed -i 's/CONFIG_PACKAGE_luci-app-turboacc_INCLUDE_SHORTCUT_FE=y/# CONFIG_PACKAGE_luci-app-turboacc_INCLUDE_SHORTCUT_FE is not set/g' $HOME_PATH/.config
 			sed -i 's/CONFIG_PACKAGE_kmod-fast-classifier=y/# CONFIG_PACKAGE_kmod-fast-classifier is not set/g' $HOME_PATH/.config
-			echo "__error_msg \"luci-app-turboacc同时选择Include Shortcut-FE CM和Include Shortcut-FE，有冲突，只能二选一，已删除Include Shortcut-FE\"" >> $CONFFLICTIONS
+			echo "__error_msg \"luci-app-turboacc同时选择Include Shortcut-FE CM和Include Shortcut-FE, 有冲突, 只能二选一, 已删除Include Shortcut-FE\"" >> $CONFFLICTIONS
 			echo "" >> $CONFFLICTIONS
 		fi
 	fi
@@ -824,12 +824,12 @@ function modify_config() {
 	if [[ `grep -c "CONFIG_PACKAGE_luci-app-unblockneteasemusic=y" $HOME_PATH/.config` -eq '1' ]]; then
 		if [[ `grep -c "CONFIG_PACKAGE_luci-app-unblockmusic=y" $HOME_PATH/.config` -eq '1' ]]; then
 			sed -i 's/CONFIG_PACKAGE_luci-app-unblockmusic=y/# CONFIG_PACKAGE_luci-app-unblockmusic is not set/g' $HOME_PATH/.config
-			echo "__error_msg \"您选择了luci-app-unblockmusic，会和luci-app-unblockneteasemusic冲突导致编译错误，已删除luci-app-unblockmusic\"" >> $CONFFLICTIONS
+			echo "__error_msg \"您选择了luci-app-unblockmusic, 会和luci-app-unblockneteasemusic冲突导致编译错误, 已删除luci-app-unblockmusic\"" >> $CONFFLICTIONS
 			echo "" >> $CONFFLICTIONS
 		fi
 		if [[ `grep -c "CONFIG_PACKAGE_luci-app-unblockneteasemusic-go=y" $HOME_PATH/.config` -eq '1' ]]; then
 			sed -i 's/CONFIG_PACKAGE_luci-app-unblockneteasemusic-go=y/# CONFIG_PACKAGE_luci-app-unblockneteasemusic-go is not set/g' $HOME_PATH/.config
-			echo "__error_msg \"您选择了luci-app-unblockneteasemusic-go，会和luci-app-unblockneteasemusic冲突导致编译错误，已删除luci-app-unblockneteasemusic-go\"" >> $CONFFLICTIONS
+			echo "__error_msg \"您选择了luci-app-unblockneteasemusic-go, 会和luci-app-unblockneteasemusic冲突导致编译错误, 已删除luci-app-unblockneteasemusic-go\"" >> $CONFFLICTIONS
 			echo "" >> $CONFFLICTIONS
 		fi
 	fi
@@ -837,12 +837,12 @@ function modify_config() {
 	if [[ `grep -c "CONFIG_PACKAGE_luci-theme-argon=y" $HOME_PATH/.config` -eq '1' ]]; then
 		if [[ `grep -c "CONFIG_PACKAGE_luci-theme-argon_new=y" $HOME_PATH/.config` -eq '1' ]]; then
 			sed -i 's/CONFIG_PACKAGE_luci-theme-argon_new=y/# CONFIG_PACKAGE_luci-theme-argon_new is not set/g' $HOME_PATH/.config
-			echo "__error_msg \"您同时选择luci-theme-argon和luci-theme-argon_new，插件有冲突，相同功能插件只能二选一，已删除luci-theme-argon_new\"" >> $CONFFLICTIONS
+			echo "__error_msg \"您同时选择luci-theme-argon和luci-theme-argon_new, 插件有冲突, 相同功能插件只能二选一, 已删除luci-theme-argon_new\"" >> $CONFFLICTIONS
 			echo "" >> $CONFFLICTIONS
 		fi
 		if [[ `grep -c "CONFIG_PACKAGE_luci-theme-argonne=y" $HOME_PATH/.config` -eq '1' ]]; then
 			sed -i 's/CONFIG_PACKAGE_luci-theme-argonne=y/# CONFIG_PACKAGE_luci-theme-argonne is not set/g' $HOME_PATH/.config
-			echo "__error_msg \"您同时选择luci-theme-argon和luci-theme-argonne，插件有冲突，相同功能插件只能二选一，已删除luci-theme-argonne\"" >> $CONFFLICTIONS
+			echo "__error_msg \"您同时选择luci-theme-argon和luci-theme-argonne, 插件有冲突, 相同功能插件只能二选一, 已删除luci-theme-argonne\"" >> $CONFFLICTIONS
 			echo "" >> $CONFFLICTIONS
 		fi
 		if [[ `grep -c "CONFIG_PACKAGE_luci-app-argon-config=y" $HOME_PATH/.config` -eq '0' ]]; then
@@ -872,7 +872,7 @@ function modify_config() {
 }
 
 ################################################################################################################
-# 编译机型CPU机型架构、内核版本、固件名称、固件自动更新相关信息等（依赖于make defconfig，须在生成.config之后）
+# 编译机型CPU机型架构、内核版本、固件名称、固件自动更新相关信息等（依赖于make defconfig, 须在生成.config之后）
 ################################################################################################################
 function firmware_settings() {
 	echo "--------------firmware_settings start--------------"
@@ -931,7 +931,7 @@ function firmware_settings() {
 			KERNEL_PATCHVER=$NEW_KERNEL_PATCHVER
 			__success_msg "内核[ $NEW_KERNEL_PATCHVER ]更换完成"
 		else
-			__error_msg "没发现与$TARGET_PROFILE机型对应[ $NEW_KERNEL_PATCHVER ]内核，使用默认内核[ $KERNEL_PATCHVER ]编译"
+			__error_msg "没发现与$TARGET_PROFILE机型对应[ $NEW_KERNEL_PATCHVER ]内核, 使用默认内核[ $KERNEL_PATCHVER ]编译"
 		fi
 	else
 		__info_msg "编译固件内核：[ $KERNEL_PATCHVER ]"
@@ -979,9 +979,9 @@ function firmware_settings() {
 	__info_msg "固件保存路径：$FIRMWARE_PATH"
 	# 固件版本 如：lede-x86-64-202310011001
 	FIRMWARE_BRIEF="$SOURCE-$TARGET_PROFILE-$COMPILE_DATE_HM"
-	# 固件名称前缀 如：lede-18.06-x86-64，方便自动更新固件搜寻可更新固件
+	# 固件名称前缀 如：lede-18.06-x86-64, 方便自动更新固件搜寻可更新固件
 	FIRMWARE_NAME_PREFIX="$SOURCE-$LUCI_EDITION-$TARGET_PROFILE"
-	# 固件名称（简写，x86区分legacy、uefi）如：lede-18.06-x86-64-202310101010	
+	# 固件名称（简写, x86区分legacy、uefi）如：lede-18.06-x86-64-202310101010	
 	FIRMWARE_NAME="$FIRMWARE_NAME_PREFIX-$COMPILE_DATE_HM"
 	# 固件名称与后缀
 	case "$TARGET_BOARD" in
@@ -1168,7 +1168,7 @@ function compile_info() {
 		fi
 		__blue_color "固件版本: $FIRMWARE_NAME"
 		__blue_color "云端路径: $GITHUB_RELEASE_URL"
-		__white_color "在线更新，请输入命令：autoupdate，详见命令行说明"
+		__white_color "在线更新, 请输入命令：autoupdate, 详见命令行说明"
 	fi
 	
 	echo
@@ -1196,7 +1196,7 @@ function compile_info() {
 	fi
 	if [[ $ENABLE_CCACHE =~ (fast|Fast|FAST|true|True|TRUE|normal|Normal|NORMAL) ]]; then
 		__blue_color "缓存加速：开启"
-		__white_color "如编译出错，请尝试删除缓存，或关闭缓存加速"
+		__white_color "如编译出错, 请尝试删除缓存, 或关闭缓存加速"
 	else
 		__white_color "缓存加速：关闭"
 	fi
@@ -1212,7 +1212,7 @@ function compile_info() {
 	echo "物理CPU:$cpu	核心/线程:$cores/$processor"
 	echo -e "CPU型号:\033[34m$name\033[0m"
 	echo
-	echo -e "Github在线编译，常见CPU性能排行:
+	echo -e "Github在线编译, 常见CPU性能排行:
 	AMD EPYC 7763 64-Core Processor
 	Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz
 	Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz
@@ -1305,7 +1305,7 @@ function update_repo() {
 		echo "$plugins" > $repo_plugins
 	fi
 	
-	# 提交commit，更新repo
+	# 提交commit, 更新repo
 	cd $repo_path
 	local branch_head="$(git rev-parse --abbrev-ref HEAD)"
 	if [[ "$ENABLE_REPO_UPDATE" == "true" ]]; then
@@ -1434,7 +1434,7 @@ function release_info() {
 }
 
 ################################################################################################################
-# 解锁固件分区：Bootloader、Bdata、factory、reserved0，ramips系列路由器专用(固件编译前)
+# 解锁固件分区：Bootloader、Bdata、factory、reserved0, ramips系列路由器专用(固件编译前)
 ################################################################################################################
 function unlock_bootloader() {
 	if [[ $TARGET_BOARD == "ramips" ]]; then		
@@ -1454,6 +1454,6 @@ function unlock_bootloader() {
 			__error_msg "固件分区解锁失败！"
 		fi
 	else
-		__warning_msg "非ramips系列，暂不支持！"
+		__warning_msg "非ramips系列, 暂不支持！"
 	fi
 }
