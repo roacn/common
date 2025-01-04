@@ -208,7 +208,7 @@ function notice_end() {
 ################################################################################################################
 function init_environment() {
 	sudo -E apt-get -qq update -y
-	#sudo -E apt-get -qq full-upgrade -y
+	# sudo -E apt-get -qq full-upgrade -y
 	sudo -E apt-get -qq install -y ack antlr3 aria2 asciidoc autoconf automake autopoint binutils bison \
 	build-essential bzip2 ccache clang cmake cpio curl device-tree-compiler fastjar flex g++-multilib gawk \
 	gcc-multilib gettext git git-core gperf haveged help2man intltool lib32stdc++6 libc6-dev-i386 libelf-dev \
@@ -216,8 +216,8 @@ function init_environment() {
 	libpcap0.8-dev libpython3-dev libreadline-dev libssl-dev libtool libz-dev llvm lrzsz mkisofs msmtp \
 	nano ninja-build p7zip p7zip-full patch pkgconf python2.7 python3 python3-pip qemu-utils rename rsync \
 	scons squashfs-tools subversion swig texinfo tree uglifyjs unzip upx upx-ucl vim wget xmlto xxd zlib1g-dev
-	#sudo -E apt-get -qq autoremove -y --purge
-	#sudo -E apt-get -qq clean
+	# sudo -E apt-get -qq autoremove -y --purge
+	# sudo -E apt-get -qq clean
 	sudo timedatectl set-timezone "$TZ"
 	# "/"目录创建文件夹$MATRIX_TARGET
 	sudo mkdir -p /$MATRIX_TARGET
@@ -293,9 +293,9 @@ function do_diy() {
 	# 再次更新插件源, 并安装插件源
 	./scripts/feeds update -a > /dev/null 2>&1 && ./scripts/feeds install -a > /dev/null 2>&1
 
-        # 修改golang版本
-        rm -rf feeds/packages/lang/golang
-        git clone https://github.com/sbwml/packages_lang_golang feeds/packages/lang/golang
+	# 修改golang版本
+	# rm -rf feeds/packages/lang/golang
+	# git clone https://github.com/sbwml/packages_lang_golang feeds/packages/lang/golang
 	
 	# 修改.config文件
 	modify_config
@@ -326,11 +326,9 @@ function update_feeds() {
 	# 对Lede源码中Luci版本处理
 	if [[ $SOURCE =~ (lede|Lede|LEDE) ]]; then
 		if [ "$LUCI_EDITION" == "18.06" ]; then
-			sed -Ei 's/^#(src-git luci https:\/\/github.com\/coolsnowwolf\/luci)/\1/' $feeds_file
-			sed -Ei 's/^(src-git luci https:\/\/github\.com\/coolsnowwolf\/luci\.git;openwrt-23\.05)/#\1/' $feeds_file
+			sed -i '/^src-git luci https:\/\/github.com\/coolsnowwolf\/luci.git/c\src-git luci https:\/\/github.com\/coolsnowwolf\/luci.git' $feeds_file
 		elif [ "$LUCI_EDITION" == "23.05" ]; then
-			sed -Ei 's/^(src-git luci https:\/\/github.com\/coolsnowwolf\/luci)/#\1/' $feeds_file
-			sed -Ei 's/^#(src-git luci https:\/\/github\.com\/coolsnowwolf\/luci\.git;openwrt-23\.05)/\1/' $feeds_file
+			sed -i "/^src-git luci https:\/\/github.com\/coolsnowwolf\/luci.git/c\src-git luci https:\/\/github.com\/coolsnowwolf\/luci.git;openwrt-$LUCI_EDITION" $feeds_file
 		else
 			echo "Invalid value for luci version: $LUCI_EDITION"
 			exit 1
