@@ -110,6 +110,10 @@ function parse_settings() {
 	;;
 	esac
 	
+	if [[ $LUCI_EDITION =~ (main|master) ]]; then
+		LUCI_EDITION="24.10"
+	fi
+	
 	# 基础设置
 	echo "LUCI_EDITION=$LUCI_EDITION" >> $GITHUB_ENV
 	echo "CONFIG_FILE=$CONFIG_FILE" >> $GITHUB_ENV
@@ -353,6 +357,10 @@ function update_feeds() {
 	./scripts/feeds clean
 	./scripts/feeds update -a > /dev/null 2>&1
 	sudo rm -rf $FEEDS_PATH/$packages/{LICENSE,*README*,*readme*,.git,.github,.gitignore} > /dev/null 2>&1
+	
+	# 替换Node为预编译
+	rm -rf $FEEDS_PATH/packages/lang/node
+	cp -r $COMMON_PATH/share/node/$LUCI_EDITION/node $FEEDS_PATH/packages/lang/node
 	
 	# 删除自己插件源不用的文件
 	local files_to_delete=(".git" ".github")
