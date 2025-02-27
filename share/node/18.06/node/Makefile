@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=node
-PKG_BASE:=packages-18.06
+PKG_BASE:=packages-23.05
 PKG_VERSION:=$(shell curl -s https://downloads.openwrt.org/releases/$(PKG_BASE)/aarch64_generic/packages/Packages | grep -oP '(?<=node_v)\d+\.\d+\.\d+-\d+')
 PKG_BUILD_VERSION:=$(shell curl -s https://downloads.openwrt.org/releases/$(PKG_BASE)/$(ARCH_PACKAGES)/packages/Packages | grep -oP '(?<=node_v)\d+\.\d+\.\d+-\d+')
 PKG_MAJOR_VERSION:=v$(shell echo $(PKG_BUILD_VERSION) | sed 's/-.*//')
