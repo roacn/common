@@ -62,14 +62,6 @@ function parse_settings() {
 		PACKAGES_REPO="roacn/openwrt-packages"
 	fi
 	
-	local package_repo_owner=`echo "$PACKAGES_REPO" | awk -F/ '{print $1}'` 2>/dev/null
-	if [[ $package_repo_owner == $GITHUB_ACTOR ]]; then
-		ENABLE_PACKAGES_UPDATE="true"
-		update_packages
-	else
-		ENABLE_PACKAGES_UPDATE="false"
-	fi
-	
 	case "$SOURCE_ABBR" in
 	lede|Lede|LEDE)
 		SOURCE_URL="https://github.com/coolsnowwolf/lede"
@@ -245,26 +237,6 @@ function git_clone_source() {
 	sudo rm -rf $COMMON_PATH && git clone -b main --depth 1 https://github.com/roacn/common $COMMON_PATH
 	chmod -Rf +x $BUILD_PATH
 	
-}
-
-################################################################################################################
-# 插件源仓库更新
-################################################################################################################
-function update_packages() {
-	local gitdate=$(curl -H "Authorization: token $REPO_TOKEN" -s "https://api.github.com/repos/$PACKAGES_REPO/actions/runs" | jq -r '.workflow_runs[0].created_at')
-	local gitdate_timestamp=$(date -d "$gitdate" +%s)
-	local gitdate_hms="$(date -d "$gitdate" '+%Y-%m-%d %H:%M:%S')"
-	echo "github latest merge upstream timestamp: $gitdate_timestamp, time: $gitdate_hms"
-	local now_hms="$(date '+%Y-%m-%d %H:%M:%S')"
-	local now_timestamp=$(date -d "$now_hms" +%s)
-	echo "time now timestamp: $now_timestamp, time: $now_hms"
-	if [[ $(($gitdate_timestamp+1800)) < $now_timestamp ]]; then
-		curl -X POST https://api.github.com/repos/$PACKAGES_REPO/dispatches \
-		-H "Accept: application/vnd.github.everest-preview+json" \
-		-H "Authorization: token $REPO_TOKEN" \
-		--data "{\"event_type\": \"updated by ${GITHUB_REPOSITORY##*/}\"}"
-	fi
-	__info_msg "packages url: https://github.com/$PACKAGES_REPO"
 }
 
 ################################################################################################################
@@ -1272,7 +1244,6 @@ function update_repo() {
 	local repo_matrix_target_path="$repo_path/build/$MATRIX_TARGET"
 	local repo_config_file="$repo_matrix_target_path/config/$CONFIG_FILE"
 	local repo_settings_ini="$repo_matrix_target_path/settings.ini"
-	local repo_plugins="$repo_matrix_target_path/release/plugins"
 	
 	[[ -d "$repo_path" ]] && rm -rf $repo_path
 
@@ -1303,19 +1274,12 @@ function update_repo() {
 		cp -rf $DIFFCONFIG_TXT $repo_config_file
 	fi
 	
-	# 更新plugins插件列表
-	local plugins="$(grep -Eo "CONFIG_PACKAGE_luci-app-.*=y|CONFIG_PACKAGE_luci-theme-.*=y" $HOME_PATH/.config |grep -v 'INCLUDE\|_Proxy\|_static\|_dynamic' |sed 's/=y//' |sed 's/CONFIG_PACKAGE_//g')"
-	if [[ "$plugins" != "$(cat $repo_plugins)" ]]; then
-		ENABLE_REPO_UPDATE="true"
-		echo "$plugins" > $repo_plugins
-	fi
-	
 	# 提交commit, 更新repo
 	cd $repo_path
 	local branch_head="$(git rev-parse --abbrev-ref HEAD)"
 	if [[ "$ENABLE_REPO_UPDATE" == "true" ]]; then
 		git add .
-		git commit -m "[$MATRIX_TARGET] Update plugins, $CONFIG_FILE and settings.ini, etc. "
+		git commit -m "[$MATRIX_TARGET] Update $CONFIG_FILE and settings.ini, etc. "
 		git push --force "https://$REPO_TOKEN@github.com/$GITHUB_REPOSITORY" HEAD:$branch_head
 		__success_msg "Your branch origin/$branch_head is now up to the latest."
 	else
@@ -1431,34 +1395,9 @@ function release_info() {
 	
 	if [[ "$FIRMWARE_TYPE" == "lxc" ]]; then
 		cat >> $RELEASEINFO_MD <<-EOF
-		注：「lxc容器专用」
+		注:「lxc容器专用」
 		EOF
 	fi
 
 	cat $RELEASEINFO_MD
-}
-
-################################################################################################################
-# 解锁固件分区：Bootloader、Bdata、factory、reserved0, ramips系列路由器专用(固件编译前)
-################################################################################################################
-function unlock_bootloader() {
-	if [[ $TARGET_BOARD == "ramips" ]]; then		
-		if [[ -f "target/linux/$TARGET_BOARD/dts/${TARGET_SUBTARGET}_${TARGET_DEVICE}.dts" ]]; then
-			local dts_file="target/linux/$TARGET_BOARD/dts/${TARGET_SUBTARGET}_${TARGET_DEVICE}.dts"
-		elif [[ -f "target/linux/$TARGET_BOARD/dts/${TARGET_SUBTARGET}_${TARGET_PROFILE}.dts" ]]; then
-			local dts_file="target/linux/$TARGET_BOARD/dts/${TARGET_SUBTARGET}_${TARGET_PROFILE}.dts"	
-		else
-			return
-		fi
-		__info_msg "dts文件：$dts_file"
-		sed -i "/read-only;/d" $dts_file
-		if [[ `grep -c "read-only;" $dts_file` -eq '0' ]]; then
-			__success_msg "固件分区已经解锁！"
-			echo "UNLOCK=true" >> $GITHUB_ENV
-		else
-			__error_msg "固件分区解锁失败！"
-		fi
-	else
-		__warning_msg "非ramips系列, 暂不支持！"
-	fi
 }
